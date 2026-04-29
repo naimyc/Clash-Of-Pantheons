@@ -125,6 +125,7 @@ Besiege den gegnerischen Gott/ Pantheon Team.
 ---
 
 ### 🐉 Mythos (Μῦθος)  (M)
+- 1 pro Team
 - Einzelne legendäre Kreatur / Wesen
 - Beeinflussen die Umgebung/ Umwelt
 - Starker Einfluss auf Kämpfe
