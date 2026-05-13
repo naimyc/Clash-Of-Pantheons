@@ -1,0 +1,40 @@
+[gd_scene format=3 uid="uid://egu0g0yaan3d"]
+
+[ext_resource type="Script" uid="uid://byj7pt21hgco7" path="res://scenes/tile/tile.gd" id="1_3dk36"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_uiyn6"]
+size = Vector3(1, 0.2, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_3dk36"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_uiyn6"]
+material = SubResource("StandardMaterial3D_3dk36")
+size = Vector3(1, 0.2, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ywnoi"]
+transparency = 1
+cull_mode = 1
+vertex_color_use_as_albedo = true
+albedo_color = Color(1, 0.19215687, 0.22745098, 0.85882354)
+
+[sub_resource type="BoxMesh" id="BoxMesh_jy7pm"]
+material = SubResource("StandardMaterial3D_ywnoi")
+size = Vector3(1.02, -0.3, 1.02)
+
+[node name="Tile" type="Node3D" unique_id=103650759]
+script = ExtResource("1_3dk36")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="." unique_id=1263122539]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D" unique_id=1346756768]
+shape = SubResource("BoxShape3D_uiyn6")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=168673927]
+mesh = SubResource("BoxMesh_uiyn6")
+
+[node name="HighlightMesh" type="MeshInstance3D" parent="." unique_id=1870260959]
+visible = false
+mesh = SubResource("BoxMesh_jy7pm")
+
+[connection signal="input_event" from="StaticBody3D" to="." method="_on_input_event"]
+[connection signal="mouse_entered" from="StaticBody3D" to="." method="_on_mouse_entered"]

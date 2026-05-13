@@ -2,21 +2,20 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://3yw23745tf6w"
-path.s3tc="res://.godot/imported/Steve_diffuse.jpg-7e4ae70c81e0f54f70d1ffe924c82075.s3tc.ctex"
+uid="uid://fj8qqlagyaje"
+path="res://.godot/imported/2.png-8f7485d2f3c7b45f775ac6cbead9624b.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
-"vram_texture": true
+"vram_texture": false
 }
 
 [deps]
 
-source_file="res://resources/models/Steve_diffuse.jpg"
-dest_files=["res://.godot/imported/Steve_diffuse.jpg-7e4ae70c81e0f54f70d1ffe924c82075.s3tc.ctex"]
+source_file="res://resources/skins/2.png"
+dest_files=["res://.godot/imported/2.png-8f7485d2f3c7b45f775ac6cbead9624b.ctex"]
 
 [params]
 
-compress/mode=2
+compress/mode=0
 compress/high_quality=false
 compress/lossy_quality=0.7
 compress/uastc_level=0
@@ -24,7 +23,7 @@ compress/rdo_quality_loss=0.0
 compress/hdr_compression=1
 compress/normal_map=0
 compress/channel_pack=0
-mipmaps/generate=true
+mipmaps/generate=false
 mipmaps/limit=-1
 roughness/mode=0
 roughness/src_normal=""
@@ -38,4 +37,4 @@ process/normal_map_invert_y=false
 process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
 process/size_limit=0
-detect_3d/compress_to=0
+detect_3d/compress_to=1

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bbkbdgo5fexmy"
-path="res://.godot/imported/Steve_diffuse_.jpg-7b7611ab885366aa034e158a1f5f192b.ctex"
+uid="uid://odfar35o4q4b"
+path="res://.godot/imported/4.png-0cc7f5b84720e815ee45745b72b02db9.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://resources/models/Steve_diffuse_.jpg"
-dest_files=["res://.godot/imported/Steve_diffuse_.jpg-7b7611ab885366aa034e158a1f5f192b.ctex"]
+source_file="res://resources/skins/4.png"
+dest_files=["res://.godot/imported/4.png-0cc7f5b84720e815ee45745b72b02db9.ctex"]
 
 [params]
 

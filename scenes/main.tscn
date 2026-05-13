@@ -6,3 +6,4 @@
 
 [node name="Steve" parent="." unique_id=1954314547 instance=ExtResource("1_o5qli")]
 transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, 2.6056747, 0, 0.6581309)
+visible = false

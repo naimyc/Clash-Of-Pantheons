@@ -3,13 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://du7woq505xa60"
-path="res://.godot/imported/Steve.glb-ab00db5f17e9b12fdcea0226a77f82d9.scn"
+uid="uid://dxjflsauv02w8"
+path="res://.godot/imported/Steve.glb-d594172f928fed51ccfbfeebaa4f05a6.scn"
 
 [deps]
 
-source_file="res://resources/models/Steve.glb"
-dest_files=["res://.godot/imported/Steve.glb-ab00db5f17e9b12fdcea0226a77f82d9.scn"]
+source_file="res://scenes/battle/Steve.glb"
+dest_files=["res://.godot/imported/Steve.glb-d594172f928fed51ccfbfeebaa4f05a6.scn"]
 
 [params]
 
