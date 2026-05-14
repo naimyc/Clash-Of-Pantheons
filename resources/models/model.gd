@@ -1,7 +1,7 @@
 extends Node3D
 
 func _ready() -> void:
-	apply_skin("res://resources/skins/4.png")
+	apply_skin("res://resources/skins/1.png")
 
 func apply_skin(texture_path: String):
 	var tex = load(texture_path)
