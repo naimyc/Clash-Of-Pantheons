@@ -1,4 +1,4 @@
-extends Node3D
+extends Node
 class_name GridManager
 
 const GRID_SIZE = 7
@@ -12,8 +12,16 @@ var tiles = {}
 var hovered_tile = null
 var selected_tile = null
 
+@onready var input_manager = $"../InputManager"
+
 func _ready():
+
 	generate_grid()
+
+	# CONNECT SIGNALS
+	input_manager.tile_hovered.connect(_on_tile_hovered)
+	input_manager.tile_unhovered.connect(_on_tile_unhovered)
+	input_manager.tile_clicked.connect(_on_tile_clicked)
 	spawn_starting_figures()
 
 func generate_grid():
@@ -22,6 +30,7 @@ func generate_grid():
 		for z in range(GRID_SIZE):
 
 			var tile = tile_scene.instantiate()
+
 			var mesh = tile.get_node("MeshInstance3D")
 
 			# checker pattern
@@ -34,7 +43,7 @@ func generate_grid():
 
 			mesh.material_override = material
 
-			# position centered grid
+			# centered grid
 			tile.position = Vector3(
 				(x - GRID_SIZE / 2.0) * TILE_SIZE,
 				0,
@@ -44,13 +53,13 @@ func generate_grid():
 			tile.grid_position = Vector2i(x, z)
 
 			add_child(tile)
+			input_manager.register_tile(tile)
 			tiles[Vector2i(x, z)] = tile
 
 func get_tile(coord: Vector2i):
 	return tiles.get(coord)
 
 func spawn_starting_figures():
-
 	for x in range(GRID_SIZE):
 
 		spawn_figure(Vector2i(x, 0), 0)
@@ -60,9 +69,9 @@ func spawn_starting_figures():
 		spawn_figure(Vector2i(x, 6), 1)
 
 func spawn_figure(coord: Vector2i, team: int):
-	var rotation = Vector3(0,0,0)
-	
+
 	var tile = get_tile(coord)
+
 	if tile == null:
 		return
 
@@ -75,22 +84,43 @@ func spawn_figure(coord: Vector2i, team: int):
 	tile.occupied = true
 	tile.occupying_unit = figure
 
-	figure.global_position = tile.global_position + Vector3(0, 0.1, 0)
-
+	figure.position = tile.position + Vector3(0, 0.1, 0)
 	get_node("../Figures").add_child(figure)
+
 	figure.set_team(team)
 
-func set_hover(tile):
+# =========================
+# HOVER
+# =========================
+func _on_tile_hovered(tile):
 
-	if tile == hovered_tile:
+	if tile == selected_tile:
 		return
-
-	# remove old hover
-	if hovered_tile and hovered_tile != selected_tile:
-		hovered_tile.set_highlight(false)
 
 	hovered_tile = tile
 
-	# apply new hover
-	if hovered_tile and hovered_tile != selected_tile:
-		hovered_tile.set_highlight(true)
+	tile.set_highlight(true)
+func _on_tile_unhovered(tile):
+
+	if tile == selected_tile:
+		return
+
+	if hovered_tile == tile:
+		hovered_tile = null
+
+	tile.set_highlight(false)
+# =========================
+# CLICK / SELECTION
+# =========================
+
+func _on_tile_clicked(tile):
+
+	# clear old selection
+	if selected_tile:
+		selected_tile.set_selected(false)
+
+	selected_tile = tile
+
+	# set new selection
+	if selected_tile:
+		selected_tile.set_selected(true)

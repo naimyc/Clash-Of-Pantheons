@@ -1,0 +1,29 @@
+[gd_scene format=3 uid="uid://b8mjx7kitr1ih"]
+
+[ext_resource type="Script" uid="uid://cydturpjkdhqb" path="res://scenes/battle/grid_manager.gd" id="1_3hov6"]
+[ext_resource type="PackedScene" uid="uid://egu0g0yaan3d" path="res://scenes/tile/tile.tscn" id="2_6iigb"]
+[ext_resource type="Script" uid="uid://ctgf7asfr35op" path="res://scenes/battle/input_manager.gd" id="3_pu738"]
+[ext_resource type="PackedScene" uid="uid://cy3067yho4ldp" path="res://scenes/figure/figure.tscn" id="3_ugm31"]
+
+[node name="BattleScene" type="Node3D" unique_id=612207112]
+
+[node name="Figures" type="Node3D" parent="." unique_id=289879053]
+
+[node name="GridManager" type="Node3D" parent="." unique_id=1392270263]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -9.536743e-07)
+script = ExtResource("1_3hov6")
+tile_scene = ExtResource("2_6iigb")
+figure_scene = ExtResource("3_ugm31")
+
+[node name="InputManager" type="Node3D" parent="." unique_id=1691193768 node_paths=PackedStringArray("camera", "grid_manager")]
+script = ExtResource("3_pu738")
+camera = NodePath("../Camera3D")
+grid_manager = NodePath("../GridManager")
+
+[node name="Camera3D" type="Camera3D" parent="." unique_id=2096291183]
+transform = Transform3D(1, 0, 0, 0, 0.7071068, 0.7071068, 0, -0.7071068, 0.7071068, -0.5, 4.70235, 4.4104185)
+
+[node name="DirectionalLight3D2" type="DirectionalLight3D" parent="Camera3D" unique_id=1892104371]
+
+[node name="DirectionalLight3D3" type="DirectionalLight3D" parent="Camera3D" unique_id=542612835]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 5.95388, -5.9538794)

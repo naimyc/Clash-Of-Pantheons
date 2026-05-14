@@ -4,21 +4,62 @@
 [ext_resource type="PackedScene" uid="uid://egu0g0yaan3d" path="res://scenes/tile/tile.tscn" id="2_6iigb"]
 [ext_resource type="Script" uid="uid://ctgf7asfr35op" path="res://scenes/battle/input_manager.gd" id="3_pu738"]
 [ext_resource type="PackedScene" uid="uid://cy3067yho4ldp" path="res://scenes/figure/figure.tscn" id="3_ugm31"]
+[ext_resource type="Script" uid="uid://uwep7e57trme" path="res://scenes/battle2/turn_manager.gd" id="5_lbt8a"]
+[ext_resource type="Script" uid="uid://coqap1cepf28y" path="res://scenes/battle2/game_ui.gd" id="6_cywj5"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2wmvw"]
+bg_color = Color(0.84313726, 0.03529412, 0.48235294, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ww1p6"]
+bg_color = Color(0.83137256, 0.039215688, 0, 1)
+border_width_left = 10
+border_width_top = 10
+border_width_right = 10
+border_width_bottom = 10
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7hnyd"]
+bg_color = Color(0.67058825, 0.03137255, 0, 1)
+border_width_left = 10
+border_width_top = 10
+border_width_right = 10
+border_width_bottom = 10
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dddu7"]
+bg_color = Color(1, 0.25490198, 0.21568628, 1)
+border_width_left = 10
+border_width_top = 10
+border_width_right = 10
+border_width_bottom = 10
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
 
 [node name="BattleScene" type="Node3D" unique_id=612207112]
 
-[node name="Figures" type="Node3D" parent="." unique_id=289879053]
+[node name="Figures" type="Node" parent="." unique_id=508644392]
 
-[node name="GridManager" type="Node3D" parent="." unique_id=1392270263]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -9.536743e-07)
+[node name="GridManager" type="Node" parent="." unique_id=1992073917]
 script = ExtResource("1_3hov6")
 tile_scene = ExtResource("2_6iigb")
 figure_scene = ExtResource("3_ugm31")
 
-[node name="InputManager" type="Node3D" parent="." unique_id=1691193768 node_paths=PackedStringArray("camera", "grid_manager")]
+[node name="InputManager" type="Node" parent="." unique_id=800361126]
 script = ExtResource("3_pu738")
-camera = NodePath("../Camera3D")
-grid_manager = NodePath("../GridManager")
+
+[node name="TurnManager" type="Node" parent="." unique_id=1231149396]
+script = ExtResource("5_lbt8a")
 
 [node name="Camera3D" type="Camera3D" parent="." unique_id=2096291183]
 transform = Transform3D(1, 0, 0, 0, 0.7071068, 0.7071068, 0, -0.7071068, 0.7071068, -0.5, 4.70235, 4.4104185)
@@ -27,3 +68,65 @@ transform = Transform3D(1, 0, 0, 0, 0.7071068, 0.7071068, 0, -0.7071068, 0.70710
 
 [node name="DirectionalLight3D3" type="DirectionalLight3D" parent="Camera3D" unique_id=542612835]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 5.95388, -5.9538794)
+
+[node name="GameUI" type="CanvasLayer" parent="." unique_id=796480939]
+script = ExtResource("6_cywj5")
+
+[node name="Topright" type="VBoxContainer" parent="GameUI" unique_id=1471026006]
+custom_minimum_size = Vector2(20, 20)
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -178.0
+offset_bottom = 120.0
+grow_horizontal = 0
+
+[node name="GameTimeLabel" type="Label" parent="GameUI/Topright" unique_id=138363545]
+layout_mode = 2
+
+[node name="RoundTimeLabel" type="Label" parent="GameUI/Topright" unique_id=1008660317]
+layout_mode = 2
+
+[node name="Topleft" type="VBoxContainer" parent="GameUI" unique_id=1376454849]
+custom_minimum_size = Vector2(20, 20)
+offset_right = 185.0
+offset_bottom = 126.0
+
+[node name="EnemyGameTimeLabel" type="Label" parent="GameUI/Topleft" unique_id=1012735615]
+layout_mode = 2
+
+[node name="EnemyRoundTimeLabel" type="Label" parent="GameUI/Topleft" unique_id=2080408082]
+layout_mode = 2
+
+[node name="Bottomcenter" type="ProgressBar" parent="GameUI" unique_id=460731509]
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -267.0
+offset_top = -65.0
+offset_right = 268.0
+offset_bottom = -25.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_styles/fill = SubResource("StyleBoxFlat_2wmvw")
+max_value = 10.0
+step = 1.0
+
+[node name="Bottomright" type="Button" parent="GameUI" unique_id=513371267]
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -173.0
+offset_top = -94.0
+offset_right = -14.0
+offset_bottom = -18.0
+grow_horizontal = 0
+grow_vertical = 0
+theme_override_styles/normal = SubResource("StyleBoxFlat_ww1p6")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_7hnyd")
+theme_override_styles/hover = SubResource("StyleBoxFlat_dddu7")
+text = "END ROUND"

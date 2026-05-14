@@ -2,8 +2,10 @@
 
 [ext_resource type="Script" uid="uid://byj7pt21hgco7" path="res://scenes/tile/tile.gd" id="1_3dk36"]
 
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_vb0sl"]
+
 [sub_resource type="BoxShape3D" id="BoxShape3D_uiyn6"]
-size = Vector3(1, 0.2, 1)
+size = Vector3(1, 0.5, 1)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_3dk36"]
 
@@ -25,6 +27,7 @@ size = Vector3(1.02, -0.3, 1.02)
 script = ExtResource("1_3dk36")
 
 [node name="StaticBody3D" type="StaticBody3D" parent="." unique_id=1263122539]
+physics_material_override = SubResource("PhysicsMaterial_vb0sl")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D" unique_id=1346756768]
 shape = SubResource("BoxShape3D_uiyn6")
@@ -38,3 +41,4 @@ mesh = SubResource("BoxMesh_jy7pm")
 
 [connection signal="input_event" from="StaticBody3D" to="." method="_on_input_event"]
 [connection signal="mouse_entered" from="StaticBody3D" to="." method="_on_mouse_entered"]
+[connection signal="mouse_exited" from="StaticBody3D" to="." method="_on_mouse_exited"]
