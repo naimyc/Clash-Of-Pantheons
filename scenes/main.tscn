@@ -1,9 +1,0 @@
-[gd_scene format=3 uid="uid://c67cswu1p1yl"]
-
-[ext_resource type="PackedScene" uid="uid://du7woq505xa60" path="res://resources/models/Steve.glb" id="1_o5qli"]
-
-[node name="Node3D" type="Node3D" unique_id=1448210463]
-
-[node name="Steve" parent="." unique_id=1954314547 instance=ExtResource("1_o5qli")]
-transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, 2.6056747, 0, 0.6581309)
-visible = false

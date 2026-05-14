@@ -12,12 +12,50 @@ var team := 0
 
 @onready var visual: Node3D = $FigureBody
 @onready var stats: Stats = $Stats
+enum UnitType { BASILEUS, THEOI, MYTHOS, LAOS }
 
+var unit_type: UnitType = UnitType.LAOS  # Default
 
 func set_team(value: int):
 	team = value
 	update_team_visual()
+	
+func set_unit_type(value: int):
+	unit_type = value
 
+	match unit_type:
+		UnitType.BASILEUS:
+			stats.hp = 100
+			stats.attack = 25
+			stats.defense = 10
+		UnitType.THEOI:
+			stats.hp = 80
+			stats.attack = 20
+			stats.defense = 8
+		UnitType.MYTHOS:
+			stats.hp = 120
+			stats.attack = 30
+			stats.defense = 12
+		UnitType.LAOS:
+			stats.hp = 50
+			stats.attack = 10
+			stats.defense = 5
+
+	update_skin()
+	
+func update_skin():
+	if visual == null:
+		return
+
+	match unit_type:
+		UnitType.BASILEUS:
+			$FigureBody/model.apply_skin("res://resources/skins/1.png")
+		UnitType.THEOI:
+			$FigureBody/model.apply_skin("res://resources/skins/2.png")
+		UnitType.MYTHOS:
+			$FigureBody/model.apply_skin("res://resources/skins/3.png")
+		UnitType.LAOS:
+			$FigureBody/model.apply_skin("res://resources/skins/4.png")
 
 func update_team_visual():
 	if team == 1:

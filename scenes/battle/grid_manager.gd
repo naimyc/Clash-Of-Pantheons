@@ -62,13 +62,13 @@ func get_tile(coord: Vector2i):
 func spawn_starting_figures():
 	for x in range(GRID_SIZE):
 
-		spawn_figure(Vector2i(x, 0), 0)
-		spawn_figure(Vector2i(x, 1), 0)
+		spawn_figure(Vector2i(x, 0), 0, Figure.UnitType.BASILEUS)
+		spawn_figure(Vector2i(x, 1), 0, Figure.UnitType.THEOI)
 
-		spawn_figure(Vector2i(x, 5), 1)
-		spawn_figure(Vector2i(x, 6), 1)
+		spawn_figure(Vector2i(x, 5), 1, Figure.UnitType.MYTHOS)
+		spawn_figure(Vector2i(x, 6), 1, Figure.UnitType.LAOS)
 
-func spawn_figure(coord: Vector2i, team: int):
+func spawn_figure(coord: Vector2i, team: int, unit: Figure.UnitType):
 
 	var tile = get_tile(coord)
 
@@ -88,6 +88,7 @@ func spawn_figure(coord: Vector2i, team: int):
 	get_node("../Figures").add_child(figure)
 
 	figure.set_team(team)
+	figure.set_unit_type(unit)
 
 # =========================
 # HOVER

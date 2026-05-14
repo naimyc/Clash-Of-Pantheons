@@ -23,6 +23,8 @@ enum UnitType {
 
 @export var movement_range := 3
 
+
+
 func apply_type():
 
 	match unit_type:
