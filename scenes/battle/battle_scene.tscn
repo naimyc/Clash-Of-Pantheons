@@ -4,8 +4,8 @@
 [ext_resource type="PackedScene" uid="uid://egu0g0yaan3d" path="res://scenes/tile/tile.tscn" id="2_6iigb"]
 [ext_resource type="Script" uid="uid://ctgf7asfr35op" path="res://scenes/battle/input_manager.gd" id="3_pu738"]
 [ext_resource type="PackedScene" uid="uid://cy3067yho4ldp" path="res://scenes/figure/figure.tscn" id="3_ugm31"]
-[ext_resource type="Script" uid="uid://uwep7e57trme" path="res://scenes/battle2/turn_manager.gd" id="5_lbt8a"]
-[ext_resource type="Script" uid="uid://coqap1cepf28y" path="res://scenes/battle2/game_ui.gd" id="6_cywj5"]
+[ext_resource type="Script" uid="uid://uwep7e57trme" path="res://scenes/battle/turn_manager.gd" id="5_lbt8a"]
+[ext_resource type="Script" uid="uid://coqap1cepf28y" path="res://scenes/battle/game_ui.gd" id="6_cywj5"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2wmvw"]
 bg_color = Color(0.84313726, 0.03529412, 0.48235294, 1)
@@ -130,3 +130,5 @@ theme_override_styles/normal = SubResource("StyleBoxFlat_ww1p6")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_7hnyd")
 theme_override_styles/hover = SubResource("StyleBoxFlat_dddu7")
 text = "END ROUND"
+
+[connection signal="pressed" from="GameUI/Bottomright" to="TurnManager" method="_on_bottomright_pressed"]
