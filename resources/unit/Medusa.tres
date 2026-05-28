@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="UnitStats" format=3 uid="uid://fn124fjd7k5a"]
+
+[ext_resource type="Resource" uid="uid://c3oq5lgxdv6ig" path="res://resources/unit/Mythos.tres" id="1_2y5rd"]
+[ext_resource type="Script" uid="uid://5fwphwqxwimx" path="res://resources/unitSkript/unit_stats.gd" id="1_jopqk"]
+[ext_resource type="Texture2D" uid="uid://d4cyc5hy36obl" path="res://resources/skins/7.png" id="3_jeb6j"]
+
+[resource]
+script = ExtResource("1_jopqk")
+unit_name = "Medusa"
+hp = 130
+atk = 10
+move_range = 1
+attack_range = 1
+skill_name = "petrification"
+unit_texture = ExtResource("3_jeb6j")
+class_data = ExtResource("1_2y5rd")
+metadata/_custom_type_script = "uid://5fwphwqxwimx"

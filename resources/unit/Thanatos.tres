@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="UnitStats" format=3 uid="uid://fmhf5hjrpdd8"]
+
+[ext_resource type="Resource" uid="uid://dsknre3xdso1c" path="res://resources/unit/Theoi.tres" id="1_qk2t7"]
+[ext_resource type="Script" uid="uid://5fwphwqxwimx" path="res://resources/unitSkript/unit_stats.gd" id="1_w3vdq"]
+[ext_resource type="Texture2D" uid="uid://dvpix3s0osv3l" path="res://resources/skins/6.png" id="3_rf8o7"]
+
+[resource]
+script = ExtResource("1_w3vdq")
+unit_name = "Thanatos"
+hp = 120
+atk = 15
+move_range = 1
+attack_range = 3
+skill_name = "shadow"
+skill_damage = 15
+unit_texture = ExtResource("3_rf8o7")
+class_data = ExtResource("1_qk2t7")
+metadata/_custom_type_script = "uid://5fwphwqxwimx"

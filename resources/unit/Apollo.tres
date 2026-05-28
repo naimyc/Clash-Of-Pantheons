@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="UnitStats" format=3 uid="uid://rhm6tjuusshl"]
+
+[ext_resource type="Resource" uid="uid://dsknre3xdso1c" path="res://resources/unit/Theoi.tres" id="1_33pe1"]
+[ext_resource type="Script" uid="uid://5fwphwqxwimx" path="res://resources/unitSkript/unit_stats.gd" id="1_julqi"]
+[ext_resource type="Texture2D" uid="uid://dbmklln0iat2h" path="res://resources/skins/8.png" id="3_dhsk8"]
+
+[resource]
+script = ExtResource("1_julqi")
+unit_name = "Apollo"
+hp = 100
+atk = 20
+move_range = 1
+attack_range = 3
+skill_name = "sunbeam"
+skill_damage = 30
+unit_texture = ExtResource("3_dhsk8")
+class_data = ExtResource("1_33pe1")
+metadata/_custom_type_script = "uid://5fwphwqxwimx"

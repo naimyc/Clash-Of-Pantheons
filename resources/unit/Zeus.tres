@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="UnitStats" format=3 uid="uid://bsflh33ntoaqr"]
+
+[ext_resource type="Script" uid="uid://5fwphwqxwimx" path="res://resources/unitSkript/unit_stats.gd" id="1_22fes"]
+[ext_resource type="Resource" uid="uid://rrt3jjwybofb" path="res://resources/unit/Basilefs.tres" id="1_67o1s"]
+[ext_resource type="Texture2D" uid="uid://c5bnbegrf501r" path="res://resources/skins/1.png" id="3_37gxt"]
+
+[resource]
+script = ExtResource("1_22fes")
+unit_name = "Zeus"
+hp = 150
+atk = 30
+move_range = 1
+attack_range = 3
+skill_name = "Light"
+skill_damage = 50
+unit_texture = ExtResource("3_37gxt")
+class_data = ExtResource("1_67o1s")
+metadata/_custom_type_script = "uid://5fwphwqxwimx"

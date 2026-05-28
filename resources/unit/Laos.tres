@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="UnitClassData" format=3 uid="uid://dqh88hgpf1nlu"]
+
+[ext_resource type="Script" uid="uid://7qfmfm6iwnw2" path="res://resources/unitSkript/unit_class_data.gd" id="1_g5r2e"]
+
+[resource]
+script = ExtResource("1_g5r2e")
+typ_name = "P"
+elixir_cost_move = 1
+elixir_cost_atk = 1
+movement_type = "Orthogonal"
+metadata/_custom_type_script = "uid://7qfmfm6iwnw2"

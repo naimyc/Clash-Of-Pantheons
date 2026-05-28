@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="UnitClassData" format=3 uid="uid://rrt3jjwybofb"]
+
+[ext_resource type="Script" uid="uid://7qfmfm6iwnw2" path="res://resources/unitSkript/unit_class_data.gd" id="1_c7cpk"]
+
+[resource]
+script = ExtResource("1_c7cpk")
+typ_name = "K"
+elixir_cost_move = 2
+elixir_cost_atk = 4
+elixir_cost_skill = 6
+movement_type = "all"
+metadata/_custom_type_script = "uid://7qfmfm6iwnw2"

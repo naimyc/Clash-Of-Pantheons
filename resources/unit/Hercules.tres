@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="UnitStats" format=3 uid="uid://bkmfoatsneta2"]
+
+[ext_resource type="Resource" uid="uid://dsknre3xdso1c" path="res://resources/unit/Theoi.tres" id="1_35xfi"]
+[ext_resource type="Script" uid="uid://5fwphwqxwimx" path="res://resources/unitSkript/unit_stats.gd" id="1_jg50u"]
+[ext_resource type="Texture2D" uid="uid://c0ojpjos7yjpd" path="res://resources/skins/4.png" id="3_tnqln"]
+
+[resource]
+script = ExtResource("1_jg50u")
+unit_name = "Hercules"
+hp = 120
+atk = 10
+move_range = 1
+attack_range = 1
+skill_name = "iron fist"
+skill_damage = 20
+unit_texture = ExtResource("3_tnqln")
+class_data = ExtResource("1_35xfi")
+metadata/_custom_type_script = "uid://5fwphwqxwimx"

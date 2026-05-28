@@ -3,7 +3,6 @@
 [ext_resource type="Script" uid="uid://bvbgrc7xo6vh0" path="res://scenes/figure/figure.gd" id="1_obmwr"]
 [ext_resource type="Script" uid="uid://cc1a0ym16o5sc" path="res://resources/models/model.gd" id="3_emvch"]
 [ext_resource type="PackedScene" uid="uid://c5be77i3mvp0q" path="res://resources/models/model.glb" id="4_dwgnv"]
-[ext_resource type="Script" uid="uid://bpassiachqosw" path="res://scenes/figure/stats.gd" id="4_uh5y7"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_5yyww"]
 size = Vector3(1, 2, 1)
@@ -15,6 +14,7 @@ script = ExtResource("1_obmwr")
 transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, 0)
 
 [node name="model" parent="FigureBody" unique_id=1850408361 instance=ExtResource("4_dwgnv")]
+unique_name_in_owner = true
 script = ExtResource("3_emvch")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="FigureBody" unique_id=522391703]
@@ -24,8 +24,5 @@ shape = SubResource("BoxShape3D_5yyww")
 [node name="SelectionVisual" type="Node3D" parent="." unique_id=1756879408]
 
 [node name="Effects" type="Node3D" parent="." unique_id=1523031034]
-
-[node name="Stats" type="Node" parent="." unique_id=1265596037]
-script = ExtResource("4_uh5y7")
 
 [connection signal="input_event" from="FigureBody" to="." method="_on_figure_body_input_event"]

@@ -1,0 +1,7 @@
+[gd_scene format=3 uid="uid://4voypfocwq7r"]
+
+[node name="Node3D" type="Node3D" unique_id=1448210463]
+
+[node name="Steve" parent="." unique_id=1954314547]
+transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, 2.6056747, 0, 0.6581309)
+visible = false

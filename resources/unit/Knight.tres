@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="UnitStats" format=3 uid="uid://hstmtodd1378"]
+
+[ext_resource type="Resource" uid="uid://dqh88hgpf1nlu" path="res://resources/unit/Laos.tres" id="1_qmfrd"]
+[ext_resource type="Script" uid="uid://5fwphwqxwimx" path="res://resources/unitSkript/unit_stats.gd" id="2_5opg3"]
+[ext_resource type="Texture2D" uid="uid://cgrmvr6qcy0wt" path="res://resources/skins/2.png" id="3_e8ugl"]
+
+[resource]
+script = ExtResource("2_5opg3")
+unit_name = "Knight"
+hp = 60
+atk = 10
+move_range = 1
+attack_range = 1
+unit_texture = ExtResource("3_e8ugl")
+class_data = ExtResource("1_qmfrd")
+metadata/_custom_type_script = "uid://5fwphwqxwimx"
