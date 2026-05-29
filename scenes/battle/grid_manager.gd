@@ -9,9 +9,6 @@ const TILE_SIZE = 1.0
 @export var tile_scene: PackedScene = preload("res://scenes/tile/tile.tscn")
 @export var figure_scene: PackedScene = preload("res://scenes/figure/figure.tscn")
 
-# Lädt die visuelle Vorschau für gültige Schritte vorab
-const MOVE_INDICATOR_SCENE = preload("res://scenes/tile/move_indicator.tscn")
-
 # --- INTERNE SPEICHERUNG ---
 var tiles = {}
 var hovered_tile = null
