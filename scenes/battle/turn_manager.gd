@@ -1,21 +1,20 @@
 extends Node
 
 # --- SIGNALE ---
-# Signale für die Kommunikation mit der Benutzeroberfläche (UI)
 signal turn_changed(active_player_ref)
-signal energy_updated(player_one_energy) # Signal fixiert auf Spieler 1
+signal energy_updated(my_energy: int, opponent_energy: int)
 
 # --- INTERNE KLASSEN ---
-# Speicherstruktur für den Zustand des jeweiligen Spielers
 class PlayerState:
-	var total_game_time: float = 300.0 # 5 Minuten Gesamtzeit auf der Schachuhr
-	var current_energy: int = 0        # Aktuelles Elixier für Bewegungen/Aktionen
-	var time_bonus: float = 0.0        # Zeitgutschrift für den nächsten Zug
+	var total_game_time: float = 300.0
+	var current_energy: int = 0
+	var time_bonus: float = 0.0
 	var is_active: bool = false
+	var peer_id: int = 0
 
 # --- VARIABLEN UND CONFIG ---
-var player_one = PlayerState.new()
-var player_two = PlayerState.new()
+var player_one = PlayerState.new()   # always the host (peer_id 1)
+var player_two = PlayerState.new()   # always the client
 var active_player: PlayerState
 
 const MAX_ENERGY: int = 10
@@ -24,78 +23,168 @@ const BASE_ROUND_TIME: float = 10.0
 
 var current_round_time: float = 0.0
 
+const SYNC_INTERVAL: float = 1.0
+var _sync_timer: float = 0.0
+
 # --- INITIALISIERUNG ---
 func _ready():
-	# Spieler 1 (Mensch) startet das Spiel
+	player_one.peer_id = 1
+
+	if multiplayer.multiplayer_peer != null:
+		if not multiplayer.is_server():
+			player_two.peer_id = multiplayer.get_unique_id()
+		else:
+			player_two.peer_id = 2
+			multiplayer.peer_connected.connect(func(id):
+				player_two.peer_id = id
+			)
+	else:
+		player_two.peer_id = 2
+
 	active_player = player_one
 	player_one.is_active = true
 	start_new_round()
 
+# --- TEAM HELPER ---
+func get_my_team() -> int:
+	var my_id = multiplayer.get_unique_id() if multiplayer.multiplayer_peer != null else 1
+	return 1 if my_id == 1 else 0
+
+# --- HELPER METHOD TO CHECK LOCAL AUTHORITY ---
+func is_my_turn() -> bool:
+	if multiplayer.multiplayer_peer == null:
+		return active_player == player_one
+	return active_player.peer_id == multiplayer.get_unique_id()
+
 # --- PROZESS-SCHLEIFE ---
-# Aktualisiert die Timer in jedem Frame (nur für den aktiven Spieler)
 func _process(delta: float):
+	var is_online = multiplayer.multiplayer_peer != null
+	var is_server = not is_online or multiplayer.is_server()
+
 	if active_player.total_game_time > 0 and current_round_time > 0:
-		current_round_time -= delta
+		current_round_time            -= delta
 		active_player.total_game_time -= delta
-		
-		# Automatischer Rundenwechsel bei Zeitablauf
-		if current_round_time <= 0:
-			end_current_round()
+
+		if is_server:
+			if current_round_time <= 0:
+				end_current_round()
+				return
+			_sync_timer -= delta
+			if _sync_timer <= 0 and is_online:
+				_sync_timer = SYNC_INTERVAL
+				rpc("sync_time_tick",
+					active_player == player_one,
+					current_round_time,
+					active_player.total_game_time)
 
 # --- ELIXIER VERBRAUCHEN ---
-# Zieht Elixier ab und beendet die Runde automatisch, wenn das Elixier leer ist
+# Only called on the server. Broadcasts updated energy to client immediately.
 func spend_energy(amount: int):
 	if active_player == null: return
-	
-	# Energie für den aktuell aktiven Spieler abziehen
 	active_player.current_energy = max(0, active_player.current_energy - amount)
-	
-	# WICHTIGER FIX: Sendet IMMER NUR das Elixier von Spieler 1 (Mensch) an die UI!
-	# Wenn der Gegner Energie verbraucht, bleibt deine Anzeige auf dem Bildschirm unverändert.
-	energy_updated.emit(player_one.current_energy)
-	
-	# Wenn das Elixier des aktiven Spielers (egal ob Spieler oder Gegner) 0 erreicht, Runde beenden
+
+	# Push the authoritative energy values to the client right away
+	if multiplayer.multiplayer_peer != null:
+		rpc("sync_energy", player_one.current_energy, player_two.current_energy)
+
+	_emit_energy()
+
 	if active_player.current_energy <= 0:
-		call_deferred("end_current_round")
+		if multiplayer.multiplayer_peer == null or multiplayer.is_server():
+			end_current_round()
+		else:
+			rpc_id(1, "request_end_round")
+
+# Emits the energy signal with the correct (my, opponent) ordering per window.
+func _emit_energy():
+	var my_id = multiplayer.get_unique_id() if multiplayer.multiplayer_peer != null else 1
+	if my_id == 1:
+		energy_updated.emit(player_one.current_energy, player_two.current_energy)
+	else:
+		energy_updated.emit(player_two.current_energy, player_one.current_energy)
+
+# Lightweight RPC: client receives authoritative energy and updates its local state + UI.
+@rpc("authority", "call_remote", "reliable")
+func sync_energy(p1_energy: int, p2_energy: int):
+	player_one.current_energy = p1_energy
+	player_two.current_energy = p2_energy
+	_emit_energy()
 
 # --- RUNDEN-LOGIK ---
-# Startet den Zug des neuen aktiven Spielers und regeneriert Ressourcen
 func start_new_round():
-	# Berechnet die Rundenzeit: Basiszeit (10s) + 50% der gesparten Restzeit
 	current_round_time = BASE_ROUND_TIME + active_player.time_bonus
-	active_player.time_bonus = 0.0 # Bonus nach Anwendung zurücksetzen
-	
-	# Elixier-Regeneration für den aktiven Spieler
-	active_player.current_energy = clampi(active_player.current_energy + ENERGY_PER_ROUND, 0, MAX_ENERGY)
-	
-	# WICHTIGER FIX: Auch beim Rundenwechsel wird der UI IMMER NUR das Elixier von Spieler 1 übergeben.
-	# Dadurch wird deine Bar niemals mit den Werten des Gegners überschrieben.
-	energy_updated.emit(player_one.current_energy)
+	active_player.time_bonus = 0.0
+	_sync_timer = SYNC_INTERVAL
+
+	active_player.current_energy = clampi(
+		active_player.current_energy + ENERGY_PER_ROUND, 0, MAX_ENERGY)
+
+	_emit_energy()
 	turn_changed.emit(active_player)
-	
-	# Setzt die Bewegungsrechte aller Figuren auf dem Spielfeld zurück
+
 	var grid_manager = get_node_or_null("../GridManager")
 	if grid_manager and grid_manager.has_method("reset_all_movements"):
 		grid_manager.reset_all_movements()
 
-# Beendet den aktuellen Zug und berechnet Zeitboni für Schnelligkeit
 func end_current_round():
+	if multiplayer.multiplayer_peer != null and not multiplayer.is_server():
+		rpc_id(1, "request_end_round")
+		return
+
 	var remaining_time = max(0, current_round_time)
 	active_player.time_bonus = remaining_time * 0.5
-	
-	# Spielerwechsel-Logik
+
 	active_player.is_active = false
-	if active_player == player_one:
-		active_player = player_two
-	else:
-		active_player = player_one
+	active_player = player_two if active_player == player_one else player_one
 	active_player.is_active = true
-	
+
 	start_new_round()
+	# Send AFTER start_new_round so the energy values already include
+	# the ENERGY_PER_ROUND that was just added for the new active player.
+	if multiplayer.multiplayer_peer != null:
+		rpc("sync_round_state",
+			active_player == player_one,
+			current_round_time,
+			player_one.current_energy,
+			player_two.current_energy)
+
+# --- RPC NETWORK SYNCHRONIZATION ---
+@rpc("any_peer", "call_local", "reliable")
+func request_end_round():
+	if multiplayer.is_server():
+		end_current_round()
+
+@rpc("authority", "call_remote", "reliable")
+func sync_round_state(is_p1_active: bool, server_round_time: float,
+		p1_energy: int, p2_energy: int):
+	print("[CLIENT sync_round_state] is_p1_active=", is_p1_active,
+		" my_id=", multiplayer.get_unique_id(),
+		" p2_peer_id=", player_two.peer_id)
+	current_round_time = server_round_time
+	active_player.is_active = false
+	active_player = player_one if is_p1_active else player_two
+	active_player.is_active = true
+	player_one.current_energy = p1_energy
+	player_two.current_energy = p2_energy
+	_emit_energy()
+	turn_changed.emit(active_player)
+	# Reset movement flags on client — start_new_round() only runs on server
+	var grid_manager = get_node_or_null("../GridManager")
+	if grid_manager and grid_manager.has_method("reset_all_movements"):
+		grid_manager.reset_all_movements()
+
+@rpc("authority", "call_remote", "unreliable")
+func sync_time_tick(is_p1_active: bool, server_round_time: float, server_total_time: float):
+	if abs(current_round_time - server_round_time) > 0.5:
+		current_round_time = server_round_time
+	if is_p1_active:
+		if abs(player_one.total_game_time - server_total_time) > 0.5:
+			player_one.total_game_time = server_total_time
+	else:
+		if abs(player_two.total_game_time - server_total_time) > 0.5:
+			player_two.total_game_time = server_total_time
 
 # --- SIGNALEINGÄNGE ---
-# Wird aufgerufen, wenn der Spieler manuell auf den "End Turn"-Button klickt
 func _on_bottomright_pressed() -> void:
-	# Verhindert, dass der Spieler den Zug des Gegners (KI) abbrechen kann
-	if active_player == player_one:
+	if is_my_turn():
 		end_current_round()
