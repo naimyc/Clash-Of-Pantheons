@@ -1,0 +1,175 @@
+[gd_scene format=3 uid="uid://sl3ixspiu8bf"]
+
+[ext_resource type="Script" uid="uid://coqap1cepf28y" path="res://scenes/battle/game_ui.gd" id="1_lypi3"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ww1p6"]
+bg_color = Color(0.83137256, 0.039215688, 0, 1)
+border_width_left = 10
+border_width_top = 10
+border_width_right = 10
+border_width_bottom = 10
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7hnyd"]
+bg_color = Color(0.67058825, 0.03137255, 0, 1)
+border_width_left = 10
+border_width_top = 10
+border_width_right = 10
+border_width_bottom = 10
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dddu7"]
+bg_color = Color(1, 0.25490198, 0.21568628, 1)
+border_width_left = 10
+border_width_top = 10
+border_width_right = 10
+border_width_bottom = 10
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2wmvw"]
+bg_color = Color(0.84313726, 0.03529412, 0.48235294, 1)
+
+[node name="GameUI" type="CanvasLayer" unique_id=1119871019]
+script = ExtResource("1_lypi3")
+
+[node name="TopRight" type="VBoxContainer" parent="." unique_id=953997654]
+custom_minimum_size = Vector2(20, 20)
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -178.0
+offset_bottom = 120.0
+grow_horizontal = 0
+
+[node name="GameTimeLabel" type="Label" parent="TopRight" unique_id=495465654]
+layout_mode = 2
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="RoundTimeLabel" type="Label" parent="TopRight" unique_id=1544463527]
+layout_mode = 2
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="TopLeft" type="VBoxContainer" parent="." unique_id=1919463012]
+custom_minimum_size = Vector2(20, 20)
+offset_right = 185.0
+offset_bottom = 126.0
+
+[node name="EnemyGameTimeLabel" type="Label" parent="TopLeft" unique_id=248531852]
+layout_mode = 2
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="EnemyRoundTimeLabel" type="Label" parent="TopLeft" unique_id=12493530]
+layout_mode = 2
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="BottomRight" type="Button" parent="." unique_id=1761951479]
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -173.0
+offset_top = -94.0
+offset_right = -14.0
+offset_bottom = -18.0
+grow_horizontal = 0
+grow_vertical = 0
+theme_override_styles/normal = SubResource("StyleBoxFlat_ww1p6")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_7hnyd")
+theme_override_styles/hover = SubResource("StyleBoxFlat_dddu7")
+text = "END ROUND"
+
+[node name="LeftStatsPanel" type="Panel" parent="." unique_id=2110222074]
+anchors_preset = 9
+anchor_bottom = 1.0
+offset_left = 30.0
+offset_top = 70.0
+offset_right = 240.0
+offset_bottom = -167.0
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="LeftStatsPanel" unique_id=566125641]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 1.0
+offset_bottom = 410.0
+grow_horizontal = 2
+
+[node name="UnitName" type="Label" parent="LeftStatsPanel/VBoxContainer" unique_id=406492628]
+layout_mode = 2
+
+[node name="HPLabel" type="Label" parent="LeftStatsPanel/VBoxContainer" unique_id=1610921978]
+layout_mode = 2
+
+[node name="ATKLabel" type="Label" parent="LeftStatsPanel/VBoxContainer" unique_id=118350620]
+layout_mode = 2
+
+[node name="DEFLabel" type="Label" parent="LeftStatsPanel/VBoxContainer" unique_id=1181806591]
+layout_mode = 2
+
+[node name="MoveCostLabel" type="Label" parent="LeftStatsPanel/VBoxContainer" unique_id=21984553]
+layout_mode = 2
+
+[node name="AttackCostLabel" type="Label" parent="LeftStatsPanel/VBoxContainer" unique_id=592559775]
+layout_mode = 2
+
+[node name="SkillCostLabel" type="Label" parent="LeftStatsPanel/VBoxContainer" unique_id=1881154862]
+layout_mode = 2
+
+[node name="BottomCenter" type="Control" parent="." unique_id=1000098283]
+layout_mode = 3
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -264.0
+offset_top = -66.0
+offset_right = 266.0
+offset_bottom = -2.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="ProgressBar" type="ProgressBar" parent="BottomCenter" unique_id=1089499054]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -265.0
+offset_top = -65.0
+offset_right = 270.0
+offset_bottom = -25.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_styles/fill = SubResource("StyleBoxFlat_2wmvw")
+max_value = 10.0
+step = 1.0
+show_percentage = false
+
+[node name="Label" type="Label" parent="BottomCenter/ProgressBar" unique_id=1094605884]
+layout_mode = 0
+offset_left = -2.0
+offset_top = 2.0
+offset_right = 536.0
+offset_bottom = 40.0
+horizontal_alignment = 1
+vertical_alignment = 1

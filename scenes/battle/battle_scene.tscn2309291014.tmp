@@ -1,0 +1,242 @@
+[gd_scene format=3 uid="uid://b8mjx7kitr1ih"]
+
+[ext_resource type="Script" uid="uid://cydturpjkdhqb" path="res://scenes/battle/grid_manager.gd" id="1_3hov6"]
+[ext_resource type="Script" uid="uid://edvagu4v31ou" path="res://scenes/battle/pathfinder.gd" id="1_7hnyd"]
+[ext_resource type="Script" uid="uid://btidof7shpx5r" path="res://scenes/battle/world_environment.gd" id="1_dddu7"]
+[ext_resource type="Script" uid="uid://ktwj3xrfproj" path="res://scenes/battle/indicator_manager.gd" id="2_dddu7"]
+[ext_resource type="Script" uid="uid://bnacsba7nkurb" path="res://scenes/battle/battle_rpc.gd" id="3_3511k"]
+[ext_resource type="Script" uid="uid://ctgf7asfr35op" path="res://scenes/battle/input_manager.gd" id="3_pu738"]
+[ext_resource type="Script" uid="uid://bovsil8r8f5yd" path="res://scenes/battle/debug_network.gd" id="4_o3k7m"]
+[ext_resource type="Script" uid="uid://cfnow0780xb1t" path="res://scenes/battle/figure_spawner.gd" id="4_puhd7"]
+[ext_resource type="Script" uid="uid://d1st2sinf4go5" path="res://scenes/battle/camera_controller.gd" id="5_cywj5"]
+[ext_resource type="Script" uid="uid://uwep7e57trme" path="res://scenes/battle/turn_manager.gd" id="5_lbt8a"]
+[ext_resource type="Script" uid="uid://coqap1cepf28y" path="res://scenes/battle/game_ui.gd" id="6_cywj5"]
+
+[sub_resource type="CameraAttributesPractical" id="CameraAttributesPractical_dddu7"]
+exposure_multiplier = 9.0
+
+[sub_resource type="Environment" id="Environment_dddu7"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ww1p6"]
+bg_color = Color(0.83137256, 0.039215688, 0, 1)
+border_width_left = 10
+border_width_top = 10
+border_width_right = 10
+border_width_bottom = 10
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7hnyd"]
+bg_color = Color(0.67058825, 0.03137255, 0, 1)
+border_width_left = 10
+border_width_top = 10
+border_width_right = 10
+border_width_bottom = 10
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dddu7"]
+bg_color = Color(1, 0.25490198, 0.21568628, 1)
+border_width_left = 10
+border_width_top = 10
+border_width_right = 10
+border_width_bottom = 10
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2wmvw"]
+bg_color = Color(0.84313726, 0.03529412, 0.48235294, 1)
+
+[node name="BattleScene" type="Node3D" unique_id=612207112]
+
+[node name="DebugNetwork" type="Node" parent="." unique_id=1761547715]
+script = ExtResource("4_o3k7m")
+
+[node name="Figures" type="Node" parent="." unique_id=508644392]
+
+[node name="GridManager" type="Node" parent="." unique_id=1992073917]
+unique_name_in_owner = true
+script = ExtResource("1_3hov6")
+
+[node name="Pathfinder" type="Node" parent="GridManager" unique_id=450824830]
+script = ExtResource("1_7hnyd")
+
+[node name="IndicatorManager" type="Node" parent="GridManager" unique_id=1239644659]
+script = ExtResource("2_dddu7")
+
+[node name="FigureSpawner" type="Node" parent="GridManager" unique_id=376517596]
+script = ExtResource("4_puhd7")
+
+[node name="BattleRpc" type="Node" parent="GridManager" unique_id=2082659446]
+script = ExtResource("3_3511k")
+
+[node name="InputManager" type="Node" parent="." unique_id=800361126]
+script = ExtResource("3_pu738")
+
+[node name="TurnManager" type="Node" parent="." unique_id=1231149396]
+unique_name_in_owner = true
+script = ExtResource("5_lbt8a")
+
+[node name="Camera3D" type="Camera3D" parent="." unique_id=2096291183]
+transform = Transform3D(1, 0, 0, 0, 0.7071068, 0.7071068, 0, -0.7071068, 0.7071068, -0.5, 4.70235, 4.4104185)
+attributes = SubResource("CameraAttributesPractical_dddu7")
+script = ExtResource("5_cywj5")
+
+[node name="DirectionalLight3D2" type="DirectionalLight3D" parent="Camera3D" unique_id=1892104371]
+light_color = Color(0.34509805, 1, 1, 1)
+light_indirect_energy = 0.5
+light_volumetric_fog_energy = 0.5
+light_specular = 0.3
+
+[node name="DirectionalLight3D3" type="DirectionalLight3D" parent="Camera3D" unique_id=542612835]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 5.95388, -5.9538794)
+visible = false
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1800954313]
+environment = SubResource("Environment_dddu7")
+script = ExtResource("1_dddu7")
+
+[node name="GameUI" type="CanvasLayer" parent="." unique_id=796480939]
+unique_name_in_owner = true
+script = ExtResource("6_cywj5")
+
+[node name="TopRight" type="VBoxContainer" parent="GameUI" unique_id=1471026006]
+custom_minimum_size = Vector2(20, 20)
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -178.0
+offset_bottom = 120.0
+grow_horizontal = 0
+
+[node name="GameTimeLabel" type="Label" parent="GameUI/TopRight" unique_id=138363545]
+layout_mode = 2
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="RoundTimeLabel" type="Label" parent="GameUI/TopRight" unique_id=1170628781]
+layout_mode = 2
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="TopLeft" type="VBoxContainer" parent="GameUI" unique_id=1376454849]
+custom_minimum_size = Vector2(20, 20)
+offset_right = 185.0
+offset_bottom = 126.0
+
+[node name="EnemyGameTimeLabel" type="Label" parent="GameUI/TopLeft" unique_id=1012735615]
+layout_mode = 2
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="EnemyRoundTimeLabel" type="Label" parent="GameUI/TopLeft" unique_id=2080408082]
+layout_mode = 2
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="BottomRight" type="Button" parent="GameUI" unique_id=513371267]
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -173.0
+offset_top = -94.0
+offset_right = -14.0
+offset_bottom = -18.0
+grow_horizontal = 0
+grow_vertical = 0
+theme_override_styles/normal = SubResource("StyleBoxFlat_ww1p6")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_7hnyd")
+theme_override_styles/hover = SubResource("StyleBoxFlat_dddu7")
+text = "END ROUND"
+
+[node name="LeftStatsPanel" type="Panel" parent="GameUI" unique_id=1639892925]
+anchors_preset = 9
+anchor_bottom = 1.0
+offset_left = 30.0
+offset_top = 70.0
+offset_right = 240.0
+offset_bottom = -167.0
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="GameUI/LeftStatsPanel" unique_id=1086416400]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 1.0
+offset_bottom = 410.0
+grow_horizontal = 2
+
+[node name="UnitName" type="Label" parent="GameUI/LeftStatsPanel/VBoxContainer" unique_id=1425483586]
+layout_mode = 2
+
+[node name="HPLabel" type="Label" parent="GameUI/LeftStatsPanel/VBoxContainer" unique_id=1527526241]
+layout_mode = 2
+
+[node name="ATKLabel" type="Label" parent="GameUI/LeftStatsPanel/VBoxContainer" unique_id=895038514]
+layout_mode = 2
+
+[node name="DEFLabel" type="Label" parent="GameUI/LeftStatsPanel/VBoxContainer" unique_id=342779940]
+layout_mode = 2
+
+[node name="MoveCostLabel" type="Label" parent="GameUI/LeftStatsPanel/VBoxContainer" unique_id=2091012014]
+layout_mode = 2
+
+[node name="AttackCostLabel" type="Label" parent="GameUI/LeftStatsPanel/VBoxContainer" unique_id=1530834829]
+layout_mode = 2
+
+[node name="SkillCostLabel" type="Label" parent="GameUI/LeftStatsPanel/VBoxContainer" unique_id=1413634283]
+layout_mode = 2
+
+[node name="BottomCenter" type="Control" parent="GameUI" unique_id=812941288]
+layout_mode = 3
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -264.0
+offset_top = -66.0
+offset_right = 266.0
+offset_bottom = -2.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="ProgressBar" type="ProgressBar" parent="GameUI/BottomCenter" unique_id=460731509]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -265.0
+offset_top = -65.0
+offset_right = 270.0
+offset_bottom = -25.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_styles/fill = SubResource("StyleBoxFlat_2wmvw")
+max_value = 10.0
+step = 1.0
+show_percentage = false
+
+[node name="Label" type="Label" parent="GameUI/BottomCenter/ProgressBar" unique_id=1013984538]
+layout_mode = 0
+offset_left = -2.0
+offset_top = 2.0
+offset_right = 536.0
+offset_bottom = 40.0
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[connection signal="pressed" from="GameUI/BottomRight" to="TurnManager" method="_on_bottomright_pressed"]
