@@ -5,7 +5,7 @@ extends Camera3D
 # ---------------------------------------------------------------------------
 const BASE_OFFSET_MY_TURN    = Vector3(0, 5.0, 4.5)
 const BASE_OFFSET_THEIR_TURN = Vector3(0, 5.8, 5.2)
-const LOOK_BIAS              = Vector3(0, 0, -0.4)   # board centre target
+const LOOK_BIAS              = Vector3(0, 0, 0)      # true board centre
 
 # Attack drama
 const ATTACK_PUSH_OFFSET = Vector3(0, 3.8, 3.2)
