@@ -8,10 +8,6 @@ const TILE_SIZE = 1.0
 
 @export var tile_scene: PackedScene = preload("res://scenes/tile/tile.tscn")
 
-<<<<<<< HEAD
-# --- INTERNE SPEICHERUNG ---
-=======
->>>>>>> 128b8aac132cf5319ed816998572a061271f7522
 var tiles = {}
 
 @onready var input_manager    = $"../InputManager"
