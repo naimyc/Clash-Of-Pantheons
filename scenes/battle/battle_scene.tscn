@@ -53,8 +53,8 @@ attributes = SubResource("CameraAttributesPractical_dddu7")
 script = ExtResource("5_cywj5")
 
 [node name="DirectionalLight3D2" type="DirectionalLight3D" parent="Camera3D" unique_id=1892104371]
-visible = false
-light_color = Color(0.34509805, 1, 1, 1)
+light_color = Color(1, 0.84065115, 0.8985861, 1)
+light_energy = 0.239
 light_indirect_energy = 0.5
 light_volumetric_fog_energy = 0.5
 light_specular = 0.3

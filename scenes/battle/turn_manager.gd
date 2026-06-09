@@ -44,6 +44,7 @@ func _ready():
 	active_player = player_one
 	player_one.is_active = true
 	start_new_round()
+	call_deferred("_connect_end_round_button")
 
 # --- TEAM HELPER ---
 func get_my_team() -> int:
@@ -157,9 +158,6 @@ func request_end_round():
 @rpc("authority", "call_remote", "reliable")
 func sync_round_state(is_p1_active: bool, server_round_time: float,
 		p1_energy: int, p2_energy: int):
-	print("[CLIENT sync_round_state] is_p1_active=", is_p1_active,
-		" my_id=", multiplayer.get_unique_id(),
-		" p2_peer_id=", player_two.peer_id)
 	current_round_time = server_round_time
 	active_player.is_active = false
 	active_player = player_one if is_p1_active else player_two
@@ -169,9 +167,9 @@ func sync_round_state(is_p1_active: bool, server_round_time: float,
 	_emit_energy()
 	turn_changed.emit(active_player)
 	# Reset movement flags on client — start_new_round() only runs on server
-	var grid_manager = get_node_or_null("../GridManager")
-	if grid_manager and grid_manager.has_method("reset_all_movements"):
-		grid_manager.reset_all_movements()
+	var gm = get_node_or_null("../GridManager")
+	if gm and gm.has_method("reset_all_movements"):
+		gm.reset_all_movements()
 
 @rpc("authority", "call_remote", "unreliable")
 func sync_time_tick(is_p1_active: bool, server_round_time: float, server_total_time: float):
@@ -185,6 +183,27 @@ func sync_time_tick(is_p1_active: bool, server_round_time: float, server_total_t
 			player_two.total_game_time = server_total_time
 
 # --- SIGNALEINGÄNGE ---
+# Tries to auto-connect to the end-round button by common node names.
+# This runs in _ready so the button works even if the editor signal was never wired.
+func _connect_end_round_button():
+	# Try common paths — adjust if your button has a different name
+	var candidates = [
+		"../GameUI/BottomRight",
+		"../GameUI/BottomCenter/EndRoundButton",
+		"../GameUI/EndRoundButton",
+		"../GameUI/SkipButton",
+		"%EndRoundButton",
+		"%BottomRight",
+		"%SkipButton",
+	]
+	for path in candidates:
+		var btn = get_node_or_null(path)
+		if btn and btn.has_signal("pressed"):
+			if not btn.pressed.is_connected(_on_bottomright_pressed):
+				btn.pressed.connect(_on_bottomright_pressed)
+				print("[TurnManager] End round button connected: ", path)
+			return
+	print("[TurnManager] WARNING: End round button not found — wire it manually in the editor or add its path to _connect_end_round_button()")
+
 func _on_bottomright_pressed() -> void:
-	if is_my_turn():
-		end_current_round()
+	end_current_round()
