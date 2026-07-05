@@ -51,6 +51,10 @@ func get_my_team() -> int:
 	var my_id = multiplayer.get_unique_id() if multiplayer.multiplayer_peer != null else 1
 	return 1 if my_id == 1 else 0
 
+# Maps a PlayerState (player_one/player_two) to the figure "team" int used by GridManager/Figure.
+func team_of(player) -> int:
+	return 1 if player == player_one else 0
+
 # --- HELPER METHOD TO CHECK LOCAL AUTHORITY ---
 func is_my_turn() -> bool:
 	if multiplayer.multiplayer_peer == null:
@@ -135,6 +139,15 @@ func end_current_round():
 	var remaining_time = max(0, current_round_time)
 	active_player.time_bonus = remaining_time * 0.5
 
+	# Team, dessen Runde gerade endet, wird entpetrifiziert – jetzt netzwerkweit
+	var team_to_clear = team_of(active_player)
+	if multiplayer.multiplayer_peer != null:
+		rpc("sync_clear_petrification", team_to_clear)
+	else:
+		var gm = get_node_or_null("../GridManager")
+		if gm and gm.has_method("clear_petrification_for_team"):
+			gm.clear_petrification_for_team(team_to_clear)
+
 	active_player.is_active = false
 	active_player = player_two if active_player == player_one else player_one
 	active_player.is_active = true
@@ -152,8 +165,13 @@ func end_current_round():
 # --- RPC NETWORK SYNCHRONIZATION ---
 @rpc("any_peer", "call_local", "reliable")
 func request_end_round():
-	if multiplayer.is_server():
-		end_current_round()
+	if not multiplayer.is_server(): return
+	var sender_id = multiplayer.get_remote_sender_id()
+	# sender_id ist 0 bei lokalem call_local-Aufruf auf dem Host selbst;
+	# in dem Fall ist der Host per _on_bottomright_pressed schon geprüft.
+	if sender_id != 0 and sender_id != active_player.peer_id:
+		return   # falscher Spieler hat versucht, die Runde zu beenden
+	end_current_round()
 
 @rpc("authority", "call_remote", "reliable")
 func sync_round_state(is_p1_active: bool, server_round_time: float,
@@ -181,6 +199,12 @@ func sync_time_tick(is_p1_active: bool, server_round_time: float, server_total_t
 	else:
 		if abs(player_two.total_game_time - server_total_time) > 0.5:
 			player_two.total_game_time = server_total_time
+			
+@rpc("authority", "call_local", "reliable")
+func sync_clear_petrification(team: int) -> void:
+	var gm = get_node_or_null("../GridManager")
+	if gm and gm.has_method("clear_petrification_for_team"):
+		gm.clear_petrification_for_team(team)
 
 # --- SIGNALEINGÄNGE ---
 # Tries to auto-connect to the end-round button by common node names.
@@ -206,4 +230,6 @@ func _connect_end_round_button():
 	print("[TurnManager] WARNING: End round button not found — wire it manually in the editor or add its path to _connect_end_round_button()")
 
 func _on_bottomright_pressed() -> void:
+	if not is_my_turn():
+		return
 	end_current_round()

@@ -59,3 +59,61 @@ func set_emissive(color: Color, energy: float):
 			dup.emission                  = color
 			dup.emission_energy_multiplier = energy
 			child.set_surface_override_material(i, dup)
+# --- PETRIFIZIERUNG ---
+var _petrify_tween: Tween = null
+var _original_materials: Dictionary = {}
+var _is_petrified_visual: bool = false
+
+func play_petrify(active: bool) -> void:
+	if _is_petrified_visual == active: return
+	_is_petrified_visual = active
+
+	if _petrify_tween: _petrify_tween.kill(); _petrify_tween = null
+
+	var body = figure.get_node_or_null("FigureBody")
+	if not body: return
+
+	if active:
+		_petrify_meshes(body)
+		_petrify_tween = figure.create_tween()
+		_petrify_tween.tween_property(figure, "scale", Vector3(0.95, 0.95, 0.95), 0.25)\
+			.set_trans(Tween.TRANS_ELASTIC).set_ease(Tween.EASE_OUT)
+	else:
+		_unpetrify_meshes(body)
+		_petrify_tween = figure.create_tween()
+		_petrify_tween.tween_property(figure, "scale", Vector3(1.0, 1.0, 1.0), 0.2)\
+			.set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+
+func _petrify_meshes(node: Node) -> void:
+	for child in node.get_children():
+		if child is MeshInstance3D:
+			var mesh = child.mesh
+			if mesh:
+				for i in mesh.get_surface_count():
+					var current = child.get_surface_override_material(i)
+					if current == null:
+						current = mesh.surface_get_material(i)
+					if current == null: continue
+					var key = str(child.get_instance_id()) + "_" + str(i)
+					if not _original_materials.has(key):
+						_original_materials[key] = current
+					var stone = StandardMaterial3D.new()
+					stone.albedo_color = Color(0.55, 0.55, 0.60)
+					stone.roughness    = 0.9
+					stone.emission_enabled           = true
+					stone.emission                   = Color(0.30, 0.25, 0.45)
+					stone.emission_energy_multiplier = 0.35
+					stone.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST
+					child.set_surface_override_material(i, stone)
+		_petrify_meshes(child)
+
+func _unpetrify_meshes(node: Node) -> void:
+	for child in node.get_children():
+		if child is MeshInstance3D:
+			var mesh = child.mesh
+			if mesh:
+				for i in mesh.get_surface_count():
+					var key = str(child.get_instance_id()) + "_" + str(i)
+					if _original_materials.has(key):
+						child.set_surface_override_material(i, _original_materials[key])
+	_original_materials.clear()
