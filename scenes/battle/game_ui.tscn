@@ -133,6 +133,10 @@ layout_mode = 2
 [node name="SkillCostLabel" type="Label" parent="LeftStatsPanel/VBoxContainer" unique_id=1881154862]
 layout_mode = 2
 
+[node name="SkillContainer" type="HBoxContainer" parent="LeftStatsPanel/VBoxContainer" unique_id=270910173]
+layout_mode = 2
+alignment = 1
+
 [node name="BottomCenter" type="Control" parent="." unique_id=1000098283]
 layout_mode = 3
 anchors_preset = 7

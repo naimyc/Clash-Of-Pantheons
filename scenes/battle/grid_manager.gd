@@ -1,5 +1,4 @@
 # grid_manager.gd — thin coordinator.
-# Children handle: Pathfinder, FigureSpawner, IndicatorManager, BattleRpc
 extends Node
 class_name GridManager
 
@@ -22,9 +21,6 @@ func _ready():
 		input_manager.tile_clicked.connect(func(t): _battle.on_tile_clicked(t))
 	_spawner.spawn_all()
 
-# ---------------------------------------------------------------------------
-# GRID
-# ---------------------------------------------------------------------------
 func _generate_grid():
 	for x in range(GRID_SIZE):
 		for z in range(GRID_SIZE):
@@ -45,9 +41,6 @@ func grid_to_world(pos: Vector2i) -> Vector3:
 func get_tile(coord: Vector2i):
 	return tiles.get(coord)
 
-# ---------------------------------------------------------------------------
-# FIGURE LOOKUP
-# ---------------------------------------------------------------------------
 func get_figure_at(pos: Vector2i) -> Figure:
 	var t = get_tile(pos)
 	if t and t.occupied and is_instance_valid(t.occupying_unit):
@@ -61,25 +54,25 @@ func get_figure_at(pos: Vector2i) -> Figure:
 			return child
 	return null
 
-# ---------------------------------------------------------------------------
-# CALLED BY Figure.gd
-# ---------------------------------------------------------------------------
 func select_figure(fig: Figure):
 	_battle.select_figure(fig)
 
-# ---------------------------------------------------------------------------
-# CALLED BY TurnManager
-# ---------------------------------------------------------------------------
+# Wird von TurnManager beim Rundenwechsel aufgerufen
 func reset_all_movements():
 	$IndicatorManager.clear()
 	for child in get_children():
 		if child is Figure:
-			child.has_moved_this_round    = false
-			child.has_attacked_this_round = false
+			child.has_moved_this_round      = false
+			child.has_attacked_this_round   = false
+			child.has_used_skill_this_round = false
+			child.has_used_skill_this_round = false
 
-# ---------------------------------------------------------------------------
-# HOVER
-# ---------------------------------------------------------------------------
+# Wird von TurnManager am Ende der Runde des petrifizierten Teams aufgerufen
+func clear_petrification_for_team(team: int) -> void:
+	for child in get_children():
+		if child is Figure and child.team == team and child.is_petrified:
+			child.set_petrified(false)
+
 func _on_tile_hovered(tile):
 	tile.set_highlight(true)
 

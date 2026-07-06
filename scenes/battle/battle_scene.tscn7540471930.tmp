@@ -1,0 +1,71 @@
+[gd_scene format=3 uid="uid://b8mjx7kitr1ih"]
+
+[ext_resource type="Script" uid="uid://cydturpjkdhqb" path="res://scenes/battle/grid_manager.gd" id="1_3hov6"]
+[ext_resource type="Script" uid="uid://edvagu4v31ou" path="res://scenes/battle/pathfinder.gd" id="1_7hnyd"]
+[ext_resource type="Script" uid="uid://btidof7shpx5r" path="res://scenes/battle/world_environment.gd" id="1_dddu7"]
+[ext_resource type="Script" uid="uid://ktwj3xrfproj" path="res://scenes/battle/indicator_manager.gd" id="2_dddu7"]
+[ext_resource type="Script" uid="uid://bnacsba7nkurb" path="res://scenes/battle/battle_rpc.gd" id="3_3511k"]
+[ext_resource type="Script" uid="uid://ctgf7asfr35op" path="res://scenes/battle/input_manager.gd" id="3_pu738"]
+[ext_resource type="Script" uid="uid://bovsil8r8f5yd" path="res://scenes/battle/debug_network.gd" id="4_o3k7m"]
+[ext_resource type="Script" uid="uid://cfnow0780xb1t" path="res://scenes/battle/figure_spawner.gd" id="4_puhd7"]
+[ext_resource type="Script" uid="uid://d1st2sinf4go5" path="res://scenes/battle/camera_controller.gd" id="5_cywj5"]
+[ext_resource type="Script" uid="uid://uwep7e57trme" path="res://scenes/battle/turn_manager.gd" id="5_lbt8a"]
+[ext_resource type="PackedScene" uid="uid://sl3ixspiu8bf" path="res://scenes/battle/game_ui.tscn" id="11_dddu7"]
+
+[sub_resource type="CameraAttributesPractical" id="CameraAttributesPractical_dddu7"]
+exposure_multiplier = 9.0
+
+[sub_resource type="Environment" id="Environment_dddu7"]
+
+[node name="BattleScene" type="Node3D" unique_id=612207112]
+
+[node name="DebugNetwork" type="Node" parent="." unique_id=1761547715]
+script = ExtResource("4_o3k7m")
+
+[node name="Figures" type="Node" parent="." unique_id=508644392]
+
+[node name="GridManager" type="Node" parent="." unique_id=1992073917]
+unique_name_in_owner = true
+script = ExtResource("1_3hov6")
+
+[node name="Pathfinder" type="Node" parent="GridManager" unique_id=450824830]
+script = ExtResource("1_7hnyd")
+
+[node name="IndicatorManager" type="Node" parent="GridManager" unique_id=1239644659]
+script = ExtResource("2_dddu7")
+
+[node name="FigureSpawner" type="Node" parent="GridManager" unique_id=376517596]
+script = ExtResource("4_puhd7")
+
+[node name="BattleRpc" type="Node" parent="GridManager" unique_id=2082659446]
+script = ExtResource("3_3511k")
+
+[node name="InputManager" type="Node" parent="." unique_id=800361126]
+script = ExtResource("3_pu738")
+
+[node name="TurnManager" type="Node" parent="." unique_id=1231149396]
+unique_name_in_owner = true
+script = ExtResource("5_lbt8a")
+
+[node name="Camera3D" type="Camera3D" parent="." unique_id=2096291183]
+transform = Transform3D(1, 0, 0, 0, 0.7071068, 0.7071068, 0, -0.7071068, 0.7071068, -0.5, 4.70235, 4.4104185)
+attributes = SubResource("CameraAttributesPractical_dddu7")
+script = ExtResource("5_cywj5")
+
+[node name="DirectionalLight3D2" type="DirectionalLight3D" parent="Camera3D" unique_id=1892104371]
+light_color = Color(1, 0.84065115, 0.8985861, 1)
+light_energy = 0.239
+light_indirect_energy = 0.5
+light_volumetric_fog_energy = 0.5
+light_specular = 0.3
+
+[node name="DirectionalLight3D3" type="DirectionalLight3D" parent="Camera3D" unique_id=542612835]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 5.95388, -5.9538794)
+visible = false
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1800954313]
+environment = SubResource("Environment_dddu7")
+script = ExtResource("1_dddu7")
+
+[node name="GameUI" parent="." unique_id=1119871019 instance=ExtResource("11_dddu7")]
+unique_name_in_owner = true

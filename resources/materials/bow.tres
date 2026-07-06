@@ -1,0 +1,9 @@
+[gd_resource type="StandardMaterial3D" format=3 uid="uid://cp1hc81rxg2j7"]
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_7wamo"]
+load_path = "res://.godot/imported/AnimatedModel_Items_new_textures.png-c839174449c82e28ce65e4f7a2bba101.s3tc.ctex"
+
+[resource]
+albedo_color = Color(1, 1, 1, 0)
+albedo_texture = SubResource("CompressedTexture2D_7wamo")
+texture_filter = 0

@@ -7,8 +7,10 @@ class_name FigureSpawner
 
 var grid_manager: GridManager
 
+
 func _ready():
 	grid_manager = get_parent()
+
 
 func spawn_all():
 	var R := {
@@ -21,7 +23,6 @@ func spawn_all():
 		"medusa":   load("res://resources/unit/Medusa.tres"),
 	}
 
-	# [grid_pos, team, stats_key]
 	var placements = [
 		# Team 0
 		[Vector2i(1,1),0,"knight"],[Vector2i(2,1),0,"knight"],
@@ -30,6 +31,7 @@ func spawn_all():
 		[Vector2i(3,2),0,"medusa"],[Vector2i(2,0),0,"thanatos"],
 		[Vector2i(4,0),0,"apollo"],[Vector2i(3,1),0,"hercules"],
 		[Vector2i(3,0),0,"zeus"],
+
 		# Team 1
 		[Vector2i(1,5),1,"knight"],[Vector2i(2,5),1,"knight"],
 		[Vector2i(4,5),1,"knight"],[Vector2i(5,5),1,"knight"],
@@ -44,22 +46,49 @@ func spawn_all():
 		if stats:
 			spawn_figure(p[0], p[1], stats)
 
+
 func spawn_figure(cell: Vector2i, team: int, stats: UnitStats):
-	var fig          = figure_scene.instantiate()
-	fig.stats        = stats
-	fig.team         = team
+	var fig = figure_scene.instantiate()
+
+	fig.stats = stats
+	fig.team = team
 	fig.grid_manager = grid_manager
-	fig.position     = grid_manager.grid_to_world(cell)
+	fig.position = grid_manager.grid_to_world(cell)
 	fig.grid_position = cell
 
 	var tile = grid_manager.get_tile(cell)
 	if tile:
-		tile.occupied       = true
+		tile.occupied = true
 		tile.occupying_unit = fig
-		fig.current_tile    = tile
+		fig.current_tile = tile
 
 	grid_manager.add_child(fig)
 
-	var model = fig.get_node_or_null("FigureBody/model")
-	if model and model.has_method("apply_skin") and stats.unit_texture:
-		model.apply_skin(stats.unit_texture)
+	# -----------------------------
+	# SAFE MODEL DETECTION
+	# -----------------------------
+	var model = find_model(fig)
+
+	if model:
+		
+		# Apply skin safely
+		if model.has_method("apply_skin") and stats.unit_texture:
+			model.apply_skin(stats.unit_texture)
+
+
+# -----------------------------
+# RECURSIVE MODEL SEARCH
+# -----------------------------
+func find_model(node: Node) -> Node:
+	if node == null:
+		return null
+
+	if node.has_method("apply_skin"):
+		return node
+
+	for child in node.get_children():
+		var result = find_model(child)
+		if result:
+			return result
+
+	return null
