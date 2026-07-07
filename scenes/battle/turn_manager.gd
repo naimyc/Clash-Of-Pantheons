@@ -30,7 +30,7 @@ var _sync_timer: float = 0.0
 func _ready():
 	player_one.peer_id = 1
 
-	if multiplayer.multiplayer_peer != null:
+	if not is_offline():
 		if not multiplayer.is_server():
 			player_two.peer_id = multiplayer.get_unique_id()
 		else:
@@ -46,24 +46,38 @@ func _ready():
 	start_new_round()
 	call_deferred("_connect_end_round_button")
 
+# --- OFFLINE-ERKENNUNG ---
+# Godot setzt multiplayer_peer NIE auf null — ohne echte Verbindung steht dort ein
+# OfflineMultiplayerPeer-Platzhalter. Nur darauf zu pruefen ("== null") erkennt lokales
+# Hotseat-Spiel faelschlich als "online" und bricht die Zug-/Team-Logik.
+func is_offline() -> bool:
+	var peer = multiplayer.multiplayer_peer
+	return peer == null or peer is OfflineMultiplayerPeer
+
 # --- TEAM HELPER ---
+# In lokalem Hotseat (kein echter Netzwerk-Peer) steuert der eine lokale Client abwechselnd
+# beide Seiten, daher folgt "mein Team" hier dem gerade aktiven Spieler.
 func get_my_team() -> int:
-	var my_id = multiplayer.get_unique_id() if multiplayer.multiplayer_peer != null else 1
+	if is_offline():
+		return team_of(active_player)
+	var my_id = multiplayer.get_unique_id()
 	return 1 if my_id == 1 else 0
 
 # Maps a PlayerState (player_one/player_two) to the figure "team" int used by GridManager/Figure.
+# player_one (Host) = Team 0 (figure_spawner spawnt battle_formation_left als Team0/Host).
 func team_of(player) -> int:
-	return 1 if player == player_one else 0
+	return 0 if player == player_one else 1
 
 # --- HELPER METHOD TO CHECK LOCAL AUTHORITY ---
 func is_my_turn() -> bool:
-	if multiplayer.multiplayer_peer == null:
-		return active_player == player_one
+	if is_offline():
+		# Lokales Hotseat: keine Netzwerk-Autoritaet noetig, beide Spielerzuege sind lokal erlaubt.
+		return true
 	return active_player.peer_id == multiplayer.get_unique_id()
 
 # --- PROZESS-SCHLEIFE ---
 func _process(delta: float):
-	var is_online = multiplayer.multiplayer_peer != null
+	var is_online = not is_offline()
 	var is_server = not is_online or multiplayer.is_server()
 
 	if active_player.total_game_time > 0 and current_round_time > 0:
@@ -89,20 +103,20 @@ func spend_energy(amount: int):
 	active_player.current_energy = max(0, active_player.current_energy - amount)
 
 	# Push the authoritative energy values to the client right away
-	if multiplayer.multiplayer_peer != null:
+	if not is_offline():
 		rpc("sync_energy", player_one.current_energy, player_two.current_energy)
 
 	_emit_energy()
 
 	if active_player.current_energy <= 0:
-		if multiplayer.multiplayer_peer == null or multiplayer.is_server():
+		if is_offline() or multiplayer.is_server():
 			end_current_round()
 		else:
 			rpc_id(1, "request_end_round")
 
 # Emits the energy signal with the correct (my, opponent) ordering per window.
 func _emit_energy():
-	var my_id = multiplayer.get_unique_id() if multiplayer.multiplayer_peer != null else 1
+	var my_id = multiplayer.get_unique_id() if not is_offline() else 1
 	if my_id == 1:
 		energy_updated.emit(player_one.current_energy, player_two.current_energy)
 	else:
@@ -132,7 +146,7 @@ func start_new_round():
 		grid_manager.reset_all_movements()
 
 func end_current_round():
-	if multiplayer.multiplayer_peer != null and not multiplayer.is_server():
+	if not is_offline() and not multiplayer.is_server():
 		rpc_id(1, "request_end_round")
 		return
 
@@ -141,7 +155,7 @@ func end_current_round():
 
 	# Team, dessen Runde gerade endet, wird entpetrifiziert – jetzt netzwerkweit
 	var team_to_clear = team_of(active_player)
-	if multiplayer.multiplayer_peer != null:
+	if not is_offline():
 		rpc("sync_clear_petrification", team_to_clear)
 	else:
 		var gm = get_node_or_null("../GridManager")
@@ -155,7 +169,7 @@ func end_current_round():
 	start_new_round()
 	# Send AFTER start_new_round so the energy values already include
 	# the ENERGY_PER_ROUND that was just added for the new active player.
-	if multiplayer.multiplayer_peer != null:
+	if not is_offline():
 		rpc("sync_round_state",
 			active_player == player_one,
 			current_round_time,
@@ -231,5 +245,9 @@ func _connect_end_round_button():
 
 func _on_bottomright_pressed() -> void:
 	if not is_my_turn():
+		return
+	# Waehrend die Kamera zur anderen Seite ueberblendet, keine Runde beenden koennen.
+	var cs = get_node_or_null("../CameraSwitcher")
+	if cs and cs.is_transitioning():
 		return
 	end_current_round()

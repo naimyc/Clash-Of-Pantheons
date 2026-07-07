@@ -13,6 +13,7 @@ func _ready():
 # SKILL MODE (called from GameUI skill button)
 # ---------------------------------------------------------------------------
 func toggle_skill_mode():
+	if _input_locked(): return
 	if selected_figure == null: return
 	if selected_figure.has_used_skill_this_round: return
 	var tm = _tm()
@@ -36,6 +37,13 @@ func _ui():    return grid_manager.get_node_or_null("%GameUI")
 func _cam():   return grid_manager.get_viewport().get_camera_3d()
 func _pf()  -> Pathfinder:         return grid_manager.get_node_or_null("Pathfinder")
 func _ind() -> IndicatorManager:   return grid_manager.get_node_or_null("IndicatorManager")
+func _cam_switcher():              return grid_manager.get_node_or_null("%CameraSwitcher")
+
+# Waehrend die Kamera zur anderen Seite ueberblendet, sind keine Eingaben erlaubt —
+# die neue Runde "beginnt" erst, wenn die Kamera fertig eingeblendet ist.
+func _input_locked() -> bool:
+	var cs = _cam_switcher()
+	return cs != null and cs.is_transitioning()
 
 func _cancel_skill_mode():
 	skill_mode = false
@@ -60,6 +68,7 @@ func deselect():
 # FIGURE CLICK
 # ---------------------------------------------------------------------------
 func select_figure(clicked: Figure):
+	if _input_locked(): return
 	var tm = _tm()
 	if not tm: return
 	var my_turn = tm.is_my_turn()
@@ -102,7 +111,7 @@ func select_figure(clicked: Figure):
 					if not multiplayer.is_server():
 						rpc_id(1, "request_attack", from, to, cost)
 					else:
-						var dmg = selected_figure.stats.attack if "attack" in selected_figure.stats else 10
+						var dmg = selected_figure.stats.atk
 						rpc("apply_attack", from, to, dmg, cost)
 				return
 
@@ -130,6 +139,7 @@ func select_figure(clicked: Figure):
 # TILE CLICK
 # ---------------------------------------------------------------------------
 func on_tile_clicked(tile):
+	if _input_locked(): return
 	if selected_figure == null: return
 	if tile.grid_position == selected_figure.grid_position: return
 	var tm = _tm()
@@ -178,7 +188,7 @@ func apply_move(from: Vector2i, to: Vector2i, cost: int):
 	fig.move_to(to_tile, true)
 	fig.has_moved_this_round = true
 	var tm = _tm()
-	if tm and (multiplayer.multiplayer_peer == null or multiplayer.is_server()):
+	if tm and (tm.is_offline() or multiplayer.is_server()):
 		tm.spend_energy(cost)
 	if selected_figure == fig:
 		deselect()
@@ -204,7 +214,7 @@ func request_attack(from: Vector2i, target: Vector2i, cost: int):
 		cam.on_attack_fired(
 			atk_t.global_position if atk_t else Vector3.ZERO,
 			def_t.global_position if def_t else Vector3.ZERO)
-	rpc("apply_attack", from, target, atk.stats.attack if "attack" in atk.stats else 10, cost)
+	rpc("apply_attack", from, target, atk.stats.atk, cost)
 
 @rpc("authority", "call_local", "reliable")
 func apply_attack(from: Vector2i, target: Vector2i, damage: int, cost: int):
@@ -213,14 +223,19 @@ func apply_attack(from: Vector2i, target: Vector2i, damage: int, cost: int):
 	if atk == null or def == null: return
 	atk.has_attacked_this_round = true
 
+	# Nahkampf- oder Fernkampf-Animation je nach TATSAECHLICHER Distanz zum Ziel
+	# (nicht anhand der maximalen Reichweite der Einheit).
+	var dist = max(abs(from.x - target.x), abs(from.y - target.y))
+	var is_ranged = dist > 1
+
 	# Attack-Animation abspielen, auf Hit-Frame warten
-	var hit_signal = atk.play_attack_animation(def.global_position)
+	var hit_signal = atk.play_attack_animation(def.global_position, is_ranged)
 	await hit_signal
 	if not is_instance_valid(def): return
 
 	def.take_damage(damage)
 	var tm = _tm()
-	if tm and (multiplayer.multiplayer_peer == null or multiplayer.is_server()):
+	if tm and (tm.is_offline() or multiplayer.is_server()):
 		tm.spend_energy(cost)
 	if selected_figure == atk:
 		deselect()
@@ -243,6 +258,7 @@ func request_skill(from: Vector2i, target: Vector2i, cost: int):
 
 @rpc("authority", "call_local", "reliable")
 func apply_skill(from: Vector2i, target: Vector2i, cost: int):
+	var tm = _tm()
 	var caster = grid_manager.get_figure_at(from)
 	var def    = grid_manager.get_figure_at(target)
 	if caster == null or def == null: return
@@ -259,13 +275,15 @@ func apply_skill(from: Vector2i, target: Vector2i, cost: int):
 		"petrification":
 			def.set_petrified(true)
 			# Broadcast: alle Clients sollen den Effekt zeigen
-			if multiplayer.multiplayer_peer != null and multiplayer.is_server():
+			if tm and not tm.is_offline() and multiplayer.is_server():
 				rpc("sync_petrification", target, true)
 		_:
-			pass
+			# Alle anderen Fähigkeiten (z.B. Zeus' Blitz) fügen ihren Skill-Schaden zu.
+			var skill_dmg = caster.stats.skill_damage if caster.stats else 0
+			if skill_dmg > 0:
+				def.take_damage(skill_dmg)
 
-	var tm = _tm()
-	if tm and (multiplayer.multiplayer_peer == null or multiplayer.is_server()):
+	if tm and (tm.is_offline() or multiplayer.is_server()):
 		tm.spend_energy(cost)
 	if selected_figure == caster:
 		deselect()

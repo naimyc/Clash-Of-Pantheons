@@ -1,0 +1,149 @@
+[gd_scene format=3 uid="uid://elobbylocal001"]
+
+[ext_resource type="Script" path="res://scenes/Lobby/local_lobby.gd" id="1_lobby"]
+[ext_resource type="Script" path="res://scenes/Formation/roster_drop_zone.gd" id="2_dropzone"]
+
+[node name="LocalLobby" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_lobby")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.169, 0.227, 0.290, 1)
+
+[node name="VBox" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 16.0
+offset_top = 16.0
+offset_right = -16.0
+offset_bottom = -16.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 8
+
+[node name="Title" type="Label" parent="VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+text = "Lokales Spiel"
+horizontal_alignment = 1
+
+[node name="StatusLabel" type="Label" parent="VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+horizontal_alignment = 1
+text = "Beide Spieler waehlen ihre Aufstellung und druecken Bereit."
+
+[node name="RemoveHintLabel" type="Label" parent="VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 11
+horizontal_alignment = 1
+text = "Rechtsklick auf ein Feld ODER zurueck ins Roster ziehen: Einheit entfernen"
+
+[node name="HBoxSplit" type="HBoxContainer" parent="VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 16
+
+[node name="LeftSide" type="VBoxContainer" parent="VBox/HBoxSplit"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 8
+
+[node name="SideTitle" type="Label" parent="VBox/HBoxSplit/LeftSide"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+horizontal_alignment = 1
+text = "Host (Spieler 1)"
+
+[node name="GridArea" type="CenterContainer" parent="VBox/HBoxSplit/LeftSide"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="GridContainer" type="GridContainer" parent="VBox/HBoxSplit/LeftSide/GridArea"]
+layout_mode = 2
+columns = 7
+theme_override_constants/h_separation = 3
+theme_override_constants/v_separation = 3
+
+[node name="ValidationLabel" type="Label" parent="VBox/HBoxSplit/LeftSide"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.3, 0.3, 1)
+horizontal_alignment = 1
+visible = false
+
+[node name="RosterScroll" type="ScrollContainer" parent="VBox/HBoxSplit/LeftSide"]
+custom_minimum_size = Vector2(0, 150)
+layout_mode = 2
+horizontal_scroll_mode = 2
+vertical_scroll_mode = 0
+
+[node name="RosterTray" type="HBoxContainer" parent="VBox/HBoxSplit/LeftSide/RosterScroll"]
+layout_mode = 2
+theme_override_constants/separation = 6
+script = ExtResource("2_dropzone")
+
+[node name="BereitButton" type="Button" parent="VBox/HBoxSplit/LeftSide"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 44)
+toggle_mode = true
+text = "Bereit"
+
+[node name="VSeparator" type="VSeparator" parent="VBox/HBoxSplit"]
+layout_mode = 2
+
+[node name="RightSide" type="VBoxContainer" parent="VBox/HBoxSplit"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 8
+
+[node name="SideTitle" type="Label" parent="VBox/HBoxSplit/RightSide"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+horizontal_alignment = 1
+text = "Client (Spieler 2)"
+
+[node name="GridArea" type="CenterContainer" parent="VBox/HBoxSplit/RightSide"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="GridContainer" type="GridContainer" parent="VBox/HBoxSplit/RightSide/GridArea"]
+layout_mode = 2
+columns = 7
+theme_override_constants/h_separation = 3
+theme_override_constants/v_separation = 3
+
+[node name="ValidationLabel" type="Label" parent="VBox/HBoxSplit/RightSide"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.3, 0.3, 1)
+horizontal_alignment = 1
+visible = false
+
+[node name="RosterScroll" type="ScrollContainer" parent="VBox/HBoxSplit/RightSide"]
+custom_minimum_size = Vector2(0, 150)
+layout_mode = 2
+horizontal_scroll_mode = 2
+vertical_scroll_mode = 0
+
+[node name="RosterTray" type="HBoxContainer" parent="VBox/HBoxSplit/RightSide/RosterScroll"]
+layout_mode = 2
+theme_override_constants/separation = 6
+script = ExtResource("2_dropzone")
+
+[node name="BereitButton" type="Button" parent="VBox/HBoxSplit/RightSide"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 44)
+toggle_mode = true
+text = "Bereit"

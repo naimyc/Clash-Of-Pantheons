@@ -24,5 +24,3 @@ shape = SubResource("BoxShape3D_5yyww")
 
 [node name="Visuals" type="Node" parent="." unique_id=1054678018]
 script = ExtResource("4_uh5y7")
-
-[connection signal="input_event" from="FigureBody" to="." method="_on_input"]

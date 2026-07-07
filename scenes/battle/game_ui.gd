@@ -68,7 +68,7 @@ func _ready():
 		tm._emit_energy()
 		_apply_player_names(tm)
 		# Set initial banner state
-		_update_turn_banner(tm.is_my_turn())
+		_update_turn_banner(tm.get_my_team())
 		_max_round_time = tm.BASE_ROUND_TIME
 
 # ---------------------------------------------------------------------------
@@ -222,12 +222,14 @@ func _skill_description(skill_name: String) -> String:
 	match skill_name:
 		"petrification":
 			return "Versteinert einen Gegner.\nDieser kann 1 Zug lang\nkeine Aktionen ausführen."
+		"Blitz":
+			return "Ruft einen Blitz vom Himmel herab.\nFügt massiven Schaden zu."
 		_:
 			return ""
 
 func _apply_player_names(tm):
 	# "My" panel is always top-right; opponent is top-left.
-	var i_am_p1 = (tm.get_my_team() == 1)
+	var i_am_p1 = (tm.get_my_team() == 0)
 
 	var my_name       = "Player 1 (Host)"   if i_am_p1 else "Player 2 (Client)"
 	var opponent_name = "Player 2 (Client)" if i_am_p1 else "Player 1 (Host)"
@@ -244,7 +246,7 @@ func _process(_delta):
 
 	var round_str = format_time(tm.current_round_time)
 	var total_str = format_time(tm.active_player.total_game_time)
-	var i_am_p1   = (tm.get_my_team() == 1)
+	var i_am_p1   = (tm.get_my_team() == 0)
 
 	# Active player's clock goes on the side that matches their perspective.
 	# My clock → right panel. Opponent's clock → left panel.
@@ -400,7 +402,7 @@ func _setup_time_bars() -> void:
 func _update_split_bar(tm) -> void:
 	if tm == null: return
 	var ratio     = clampf(tm.current_round_time / _max_round_time, 0.0, 1.0)
-	var i_am_p1   = (tm.get_my_team() == 1)
+	var i_am_p1   = (tm.get_my_team() == 0)
 	var p1_active = (tm.active_player == tm.player_one)
 	# Drain the bar of whoever is currently spending their turn time.
 	# My bar drains when it's my turn; opponent's bar drains when it's their turn.
@@ -464,7 +466,7 @@ func _setup_your_turn_banner():
 	add_child(panel)
 	_your_turn_banner = panel
 
-func _update_turn_banner(is_my_turn: bool):
+func _update_turn_banner(active_team: int):
 	if _your_turn_banner == null: return
 	var style = _your_turn_banner.get_theme_stylebox("panel") as StyleBoxFlat
 	var lbl   = _your_turn_banner.get_node_or_null("BannerLabel") as Label
@@ -474,54 +476,45 @@ func _update_turn_banner(is_my_turn: bool):
 	if _banner_tween: _banner_tween.kill()
 	if _pulse_tween:  _pulse_tween.kill()
 
-	if is_my_turn:
-		# ── Flash in ──────────────────────────────────────────────────────────
-		_banner_tween = create_tween()
-		_banner_tween.set_parallel(true)
-		# Panel bg: flash bright gold then settle to a subtle glow
-		_banner_tween.tween_method(
-			func(c): style.bg_color = c,
-			Color(0.05, 0.05, 0.05, 0.0),
-			Color(1.0, 0.82, 0.1, 0.95), 0.18
-		).set_trans(Tween.TRANS_QUAD)
-		_banner_tween.chain().tween_method(
-			func(c): style.bg_color = c,
-			Color(1.0, 0.82, 0.1, 0.95),
-			Color(0.18, 0.14, 0.02, 0.82), 0.5
-		).set_trans(Tween.TRANS_CUBIC)
-		# Label: fade in white
-		_banner_tween.tween_method(
-			func(c): lbl.add_theme_color_override("font_color", c),
-			Color(1, 1, 1, 0), Color(1, 1, 1, 1.0), 0.2
-		).set_trans(Tween.TRANS_QUAD)
+	# Im lokalen Hotseat ist immer irgendjemand am Zug — daher zeigt das Banner immer
+	# an, WER (Host oder Client), statt generisch "Your Turn" zu sagen.
+	lbl.text = "HOST IST AM ZUG" if active_team == 0 else "CLIENT IST AM ZUG"
 
-		# ── Persistent pulse after the flash ─────────────────────────────────
-		_banner_tween.finished.connect(func():
-			_pulse_tween = create_tween()
-			_pulse_tween.set_loops()
-			_pulse_tween.tween_method(
-				func(c): style.bg_color = c,
-				Color(0.18, 0.14, 0.02, 0.82),
-				Color(0.55, 0.42, 0.04, 0.92), 0.7
-			).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
-			_pulse_tween.tween_method(
-				func(c): style.bg_color = c,
-				Color(0.55, 0.42, 0.04, 0.92),
-				Color(0.18, 0.14, 0.02, 0.82), 0.7
-			).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
-		, CONNECT_ONE_SHOT)
-	else:
-		# ── Fade out ──────────────────────────────────────────────────────────
-		_banner_tween = create_tween()
-		_banner_tween.set_parallel(true)
-		_banner_tween.tween_method(
+	# ── Flash in ──────────────────────────────────────────────────────────────
+	_banner_tween = create_tween()
+	_banner_tween.set_parallel(true)
+	# Panel bg: flash bright gold then settle to a subtle glow
+	_banner_tween.tween_method(
+		func(c): style.bg_color = c,
+		Color(0.05, 0.05, 0.05, 0.0),
+		Color(1.0, 0.82, 0.1, 0.95), 0.18
+	).set_trans(Tween.TRANS_QUAD)
+	_banner_tween.chain().tween_method(
+		func(c): style.bg_color = c,
+		Color(1.0, 0.82, 0.1, 0.95),
+		Color(0.18, 0.14, 0.02, 0.82), 0.5
+	).set_trans(Tween.TRANS_CUBIC)
+	# Label: fade in white
+	_banner_tween.tween_method(
+		func(c): lbl.add_theme_color_override("font_color", c),
+		Color(1, 1, 1, 0), Color(1, 1, 1, 1.0), 0.2
+	).set_trans(Tween.TRANS_QUAD)
+
+	# ── Persistent pulse after the flash ─────────────────────────────────────
+	_banner_tween.finished.connect(func():
+		_pulse_tween = create_tween()
+		_pulse_tween.set_loops()
+		_pulse_tween.tween_method(
 			func(c): style.bg_color = c,
-			style.bg_color, Color(0.05, 0.05, 0.05, 0.0), 0.4
-		).set_trans(Tween.TRANS_QUAD)
-		_banner_tween.tween_method(
-			func(c): lbl.add_theme_color_override("font_color", c),
-			Color(1, 1, 1, 1), Color(1, 1, 1, 0.0), 0.3
-		).set_trans(Tween.TRANS_QUAD)
+			Color(0.18, 0.14, 0.02, 0.82),
+			Color(0.55, 0.42, 0.04, 0.92), 0.7
+		).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+		_pulse_tween.tween_method(
+			func(c): style.bg_color = c,
+			Color(0.55, 0.42, 0.04, 0.92),
+			Color(0.18, 0.14, 0.02, 0.82), 0.7
+		).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	, CONNECT_ONE_SHOT)
 
 # energy_updated carries (my_energy, opponent_energy)
 func _on_energy_updated(my_energy: int, _opponent_energy: int):
@@ -532,12 +525,12 @@ func _on_energy_updated(my_energy: int, _opponent_energy: int):
 func _on_turn_changed(active_player_ref):
 	var tm = get_node_or_null("%TurnManager")
 	if tm == null: return
-	_update_turn_banner(tm.is_my_turn())
+	_update_turn_banner(tm.get_my_team())
 	# Bei Rundenwechsel Skill-Panel zurücksetzen
 	if _battle and _battle.skill_mode:
 		_battle.skill_mode = false
 	update_skill_panel(null)
-	var i_am_p1 = (tm.get_my_team() == 1)
+	var i_am_p1 = (tm.get_my_team() == 0)
 
 	# Zero the clock of the player whose turn just ENDED (the inactive side)
 	if active_player_ref == tm.player_one:

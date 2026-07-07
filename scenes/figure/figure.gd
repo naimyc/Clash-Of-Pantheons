@@ -81,23 +81,23 @@ func set_petrified(value: bool):
 	if is_petrified == value: return
 	is_petrified = value
 
-	# 1. Model-basierte Petrify-Animation (Stein-Welle, Farbe, Anim-Freeze)
+	# Petrify-Animation (Stein-Welle, Farbe, Anim-Freeze) — allein im Modell,
+	# es gab frueher zusaetzlich einen figure_visuals-Overlay der dasselbe Material-
+	# Objekt referenzierte und damit race-bedingt eine falsche (graue) Endfarbe erzeugte.
 	var model = find_model(self)
 	if model and model.has_method("set_petrified"):
 		model.set_petrified(value)
 
-	# 2. Zusätzlicher Visuals-Overlay-Effekt (falls figure_visuals hat)
-	if _vis and _vis.has_method("play_petrify"):
-		_vis.play_petrify(value)
-
 # ---------------------------------------------------------------------------
 # ATTACK ANIMATION — gibt Signal zurück, feuert am Hit-Frame
+# is_ranged wird vom Aufrufer anhand der TATSAECHLICHEN Distanz zum Ziel bestimmt,
+# nicht anhand der maximalen Reichweite der Einheit — ein Bogenschuetze auf ein
+# direkt benachbartes Feld schlaegt zu, statt aus der Naehe zu schiessen.
 # ---------------------------------------------------------------------------
-func play_attack_animation(target_world_pos: Vector3) -> Signal:
+func play_attack_animation(target_world_pos: Vector3, is_ranged: bool) -> Signal:
 	var model = find_model(self)
 	if model == null or not model.has_signal("attack_hit_frame"):
 		return get_tree().create_timer(0.01).timeout
-	var is_ranged = stats and stats.attack_range > 1
 	model.play_attack(is_ranged, target_world_pos)
 	return model.attack_hit_frame
 
@@ -165,6 +165,9 @@ func die():
 	else:
 		var sig = _vis.play_death()
 		sig.connect(queue_free)
+
+	if grid_manager and grid_manager.has_method("check_win_condition"):
+		grid_manager.call_deferred("check_win_condition")
 
 # ---------------------------------------------------------------------------
 # INPUT

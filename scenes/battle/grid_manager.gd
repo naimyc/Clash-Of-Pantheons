@@ -2,12 +2,15 @@
 extends Node
 class_name GridManager
 
+signal team_defeated(losing_team: int)
+
 const GRID_SIZE = 7
 const TILE_SIZE = 1.0
 
 @export var tile_scene: PackedScene = preload("res://scenes/tile/tile.tscn")
 
 var tiles = {}
+var _win_checked: bool = false
 
 @onready var input_manager    = $"../InputManager"
 @onready var _battle:  BattleRpc        = $BattleRpc
@@ -78,3 +81,22 @@ func _on_tile_hovered(tile):
 
 func _on_tile_unhovered(tile):
 	tile.set_highlight(false)
+
+# --- SIEGBEDINGUNG ---
+# Ein Team verliert, sobald sein Basilefs (Klasse "K") stirbt — nicht erst wenn
+# das ganze Team ausgeloescht ist (wie ein Koenig beim Schach).
+func is_basilefs_alive(team: int) -> bool:
+	for child in get_children():
+		if child is Figure and child.team == team and child.current_hp > 0:
+			if child.stats and child.stats.class_data and child.stats.class_data.typ_name == "K":
+				return true
+	return false
+
+func check_win_condition() -> void:
+	if _win_checked:
+		return
+	for team in [0, 1]:
+		if not is_basilefs_alive(team):
+			_win_checked = true
+			team_defeated.emit(team)
+			return

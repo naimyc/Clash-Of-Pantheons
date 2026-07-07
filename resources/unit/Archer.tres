@@ -3,6 +3,7 @@
 [ext_resource type="Resource" uid="uid://dqh88hgpf1nlu" path="res://resources/unit/Laos.tres" id="1_4jq4g"]
 [ext_resource type="Script" uid="uid://5fwphwqxwimx" path="res://resources/unitSkript/unit_stats.gd" id="2_8ajii"]
 [ext_resource type="Texture2D" uid="uid://dja1jopryov5p" path="res://resources/skins/5.png" id="3_yv2v3"]
+[ext_resource type="Texture2D" path="res://resources/portraits/Archer.png" id="4_portrait"]
 
 [resource]
 script = ExtResource("2_8ajii")
@@ -12,5 +13,6 @@ atk = 15
 move_range = 1
 attack_range = 3
 unit_texture = ExtResource("3_yv2v3")
+portrait_texture = ExtResource("4_portrait")
 class_data = ExtResource("1_4jq4g")
 metadata/_custom_type_script = "uid://5fwphwqxwimx"

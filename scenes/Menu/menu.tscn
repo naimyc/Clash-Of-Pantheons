@@ -1,0 +1,223 @@
+[gd_scene format=3 uid="uid://p4p7wvrtrp1g"]
+
+[ext_resource type="Texture2D" uid="uid://c61vlfehrt7ek" path="res://resources/MenuComponent/trophy.png" id="1_ic5kw"]
+[ext_resource type="Script" uid="uid://b2vsrn64j6gwe" path="res://scenes/Menu/menu.gd" id="2_menu"]
+
+[node name="Menu" type="Control" unique_id=1323320986]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("2_menu")
+
+[node name="Background" type="ColorRect" parent="." unique_id=697225968]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.169, 0.227, 0.29, 1)
+
+[node name="TopBar" type="HBoxContainer" parent="." unique_id=267506222]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 8.0
+offset_bottom = 72.0
+grow_horizontal = 2
+theme_override_constants/separation = 8
+
+[node name="MarginLeft" type="Control" parent="TopBar" unique_id=1001000001]
+custom_minimum_size = Vector2(12, 0)
+layout_mode = 2
+
+[node name="Trophypanel" type="PanelContainer" parent="TopBar" unique_id=1479961989]
+layout_mode = 2
+size_flags_vertical = 4
+
+[node name="HBoxContainer" type="HBoxContainer" parent="TopBar/Trophypanel" unique_id=674720084]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="TrophyIcon" type="TextureRect" parent="TopBar/Trophypanel/HBoxContainer" unique_id=875429282]
+custom_minimum_size = Vector2(28, 28)
+layout_mode = 2
+texture = ExtResource("1_ic5kw")
+expand_mode = 3
+stretch_mode = 5
+
+[node name="TrophyLabel" type="Label" parent="TopBar/Trophypanel/HBoxContainer" unique_id=762107003]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 20
+text = "2480"
+vertical_alignment = 1
+
+[node name="CoinsPanel" type="PanelContainer" parent="TopBar" unique_id=1001000040]
+layout_mode = 2
+size_flags_vertical = 4
+
+[node name="CoinsLabel" type="Label" parent="TopBar/CoinsPanel" unique_id=1001000041]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "Muenzen: 800"
+vertical_alignment = 1
+
+[node name="EnergyPanel" type="PanelContainer" parent="TopBar" unique_id=1001000042]
+layout_mode = 2
+size_flags_vertical = 4
+
+[node name="EnergyLabel" type="Label" parent="TopBar/EnergyPanel" unique_id=1001000043]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "Energie: 500"
+vertical_alignment = 1
+
+[node name="Spacer" type="Control" parent="TopBar" unique_id=557308148]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ProfilButton" type="Button" parent="TopBar" unique_id=555700115]
+custom_minimum_size = Vector2(48, 48)
+layout_mode = 2
+tooltip_text = "Profil"
+text = "P"
+
+[node name="EinstellungenButton" type="Button" parent="TopBar" unique_id=1691423861]
+custom_minimum_size = Vector2(48, 48)
+layout_mode = 2
+tooltip_text = "Einstellungen"
+text = "Einst."
+
+[node name="FreundeButton" type="Button" parent="TopBar" unique_id=1395637435]
+custom_minimum_size = Vector2(48, 48)
+layout_mode = 2
+tooltip_text = "Freunde"
+text = "Friend"
+
+[node name="MarginRight" type="Control" parent="TopBar" unique_id=1001000002]
+custom_minimum_size = Vector2(12, 0)
+layout_mode = 2
+
+[node name="ArenaDisplay" type="PanelContainer" parent="." unique_id=1864845605]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -260.0
+offset_top = -160.0
+offset_right = 260.0
+offset_bottom = 160.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="ArenaDisplay" unique_id=1001000003]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 8
+
+[node name="ArenaTextureRect" type="TextureRect" parent="ArenaDisplay/VBoxContainer" unique_id=427702300]
+custom_minimum_size = Vector2(480, 260)
+layout_mode = 2
+mouse_filter = 2
+expand_mode = 3
+stretch_mode = 6
+
+[node name="ArenaNameLabel" type="Label" parent="ArenaDisplay/VBoxContainer" unique_id=559541628]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "Arena 1 - Olymp-Tore"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ArenaHintLabel" type="Label" parent="ArenaDisplay/VBoxContainer" unique_id=1001000030]
+layout_mode = 2
+theme_override_font_sizes/font_size = 11
+text = "Mausrad: weitere Arenen ansehen"
+horizontal_alignment = 1
+
+[node name="PlayButton" type="Button" parent="." unique_id=1869722393]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -140.0
+offset_top = 190.0
+offset_right = 140.0
+offset_bottom = 245.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 22
+text = "SPIELEN"
+
+[node name="BottomBar" type="HBoxContainer" parent="." unique_id=802533860]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -90.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_constants/separation = 0
+
+[node name="FormationButton" type="Button" parent="BottomBar" unique_id=2015775149]
+custom_minimum_size = Vector2(0, 80)
+layout_mode = 2
+size_flags_horizontal = 3
+tooltip_text = "Aufstellung waehlen"
+theme_override_font_sizes/font_size = 14
+text = "Formation"
+
+[node name="GameButton" type="Button" parent="BottomBar" unique_id=162776396]
+custom_minimum_size = Vector2(0, 80)
+layout_mode = 2
+size_flags_horizontal = 3
+tooltip_text = "Karten verwalten"
+theme_override_font_sizes/font_size = 14
+text = "Karten"
+
+[node name="ShopButton" type="Button" parent="BottomBar" unique_id=1804933551]
+custom_minimum_size = Vector2(0, 80)
+layout_mode = 2
+size_flags_horizontal = 3
+tooltip_text = "Karten kaufen"
+theme_override_font_sizes/font_size = 14
+text = "Markt"
+
+[node name="ShopPanel" type="PanelContainer" parent="." unique_id=1001000020]
+layout_mode = 1
+anchors_preset = 11
+anchor_left = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = 420.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ShopVBox" type="VBoxContainer" parent="ShopPanel" unique_id=1001000021]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="ShopTitel" type="Label" parent="ShopPanel/ShopVBox" unique_id=1001000022]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Markt"
+horizontal_alignment = 1
+
+[node name="MuenzenLabel" type="Label" parent="ShopPanel/ShopVBox" unique_id=1001000023]
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "Muenzen: 500"
+horizontal_alignment = 1
+
+[node name="ShopListe" type="VBoxContainer" parent="ShopPanel/ShopVBox" unique_id=1001000024]
+layout_mode = 2
+theme_override_constants/separation = 8

@@ -1,0 +1,51 @@
+[gd_scene format=3 uid="uid://cc875c1f56lwm"]
+
+[ext_resource type="Script" path="res://scenes/battle/game_over_overlay.gd" id="1_over"]
+
+[node name="GameOverOverlay" type="CanvasLayer"]
+layer = 10
+script = ExtResource("1_over")
+
+[node name="Panel" type="PanelContainer" parent="."]
+visible = false
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
+custom_minimum_size = Vector2(360, 280)
+
+[node name="VBox" type="VBoxContainer" parent="Panel"]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="ResultLabel" type="Label" parent="Panel/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+horizontal_alignment = 1
+text = "HOST GEWINNT!"
+
+[node name="MenuButton" type="Button" parent="Panel/VBox"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 44)
+text = "Zurueck zum Menue"
+
+[node name="ReplayButton" type="Button" parent="Panel/VBox"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 44)
+text = "Nochmal lokal spielen"
+
+[node name="OtherModeButton" type="Button" parent="Panel/VBox"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 44)
+text = "Multiplayer spielen"
+
+[node name="OtherModeInfo" type="Label" parent="Panel/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+theme_override_colors/font_color = Color(0.9, 0.3, 0.3, 1)
+horizontal_alignment = 1
+autowrap_mode = 2
+visible = false

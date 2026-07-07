@@ -3,6 +3,7 @@
 [ext_resource type="Resource" uid="uid://dsknre3xdso1c" path="res://resources/unit/Theoi.tres" id="1_qk2t7"]
 [ext_resource type="Script" uid="uid://5fwphwqxwimx" path="res://resources/unitSkript/unit_stats.gd" id="1_w3vdq"]
 [ext_resource type="Texture2D" uid="uid://dvpix3s0osv3l" path="res://resources/skins/6.png" id="3_rf8o7"]
+[ext_resource type="Texture2D" path="res://resources/portraits/Thanatos.png" id="4_portrait"]
 
 [resource]
 script = ExtResource("1_w3vdq")
@@ -14,5 +15,6 @@ attack_range = 3
 skill_name = "shadow"
 skill_damage = 15
 unit_texture = ExtResource("3_rf8o7")
+portrait_texture = ExtResource("4_portrait")
 class_data = ExtResource("1_qk2t7")
 metadata/_custom_type_script = "uid://5fwphwqxwimx"

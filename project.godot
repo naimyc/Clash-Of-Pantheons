@@ -15,13 +15,13 @@ compatibility/default_parent_skeleton_in_mesh_instance_3d=true
 [application]
 
 config/name="Clash Of Pantheons"
-run/main_scene="uid://b8mjx7kitr1ih"
+run/main_scene="res://scenes/Menu/menu.tscn"
 config/features=PackedStringArray("4.6", "GL Compatibility")
 config/icon="res://icon.svg"
 
 [autoload]
 
-DebugNetwork="*uid://bovsil8r8f5yd"
+PlayerData="*res://autoload/player_data.gd"
 
 [dotnet]
 

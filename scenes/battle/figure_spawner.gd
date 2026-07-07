@@ -13,38 +13,26 @@ func _ready():
 
 
 func spawn_all():
-	var R := {
-		"knight":   load("res://resources/unit/Knight.tres"),
-		"archer":   load("res://resources/unit/Archer.tres"),
-		"apollo":   load("res://resources/unit/Apollo.tres"),
-		"hercules": load("res://resources/unit/Hercules.tres"),
-		"thanatos": load("res://resources/unit/Thanatos.tres"),
-		"zeus":     load("res://resources/unit/Zeus.tres"),
-		"medusa":   load("res://resources/unit/Medusa.tres"),
-	}
+	# Host (Team0, linke Lobby-Haelfte) und Client (Team1, rechte Lobby-Haelfte) stellen
+	# ihre Einheiten unabhaengig auf (siehe local_lobby.gd). Reihe 0 = eigene Grundlinie,
+	# Reihe 2 = Front Richtung Zentrum. Team0 -> z=Reihe, Team1 -> z=6-Reihe (gespiegelt).
+	_spawn_side(PlayerData.battle_formation_left, 0)
+	_spawn_side(PlayerData.battle_formation_right, 1)
 
-	var placements = [
-		# Team 0
-		[Vector2i(1,1),0,"knight"],[Vector2i(2,1),0,"knight"],
-		[Vector2i(4,1),0,"knight"],[Vector2i(5,1),0,"knight"],
-		[Vector2i(1,0),0,"archer"],[Vector2i(5,0),0,"archer"],
-		[Vector2i(3,2),0,"medusa"],[Vector2i(2,0),0,"thanatos"],
-		[Vector2i(4,0),0,"apollo"],[Vector2i(3,1),0,"hercules"],
-		[Vector2i(3,0),0,"zeus"],
 
-		# Team 1
-		[Vector2i(1,5),1,"knight"],[Vector2i(2,5),1,"knight"],
-		[Vector2i(4,5),1,"knight"],[Vector2i(5,5),1,"knight"],
-		[Vector2i(1,6),1,"archer"],[Vector2i(5,6),1,"archer"],
-		[Vector2i(3,4),1,"medusa"],[Vector2i(4,6),1,"thanatos"],
-		[Vector2i(2,6),1,"apollo"],[Vector2i(3,5),1,"hercules"],
-		[Vector2i(3,6),1,"zeus"],
-	]
+func _spawn_side(formation: Array, team: int) -> void:
+	for row in PlayerData.FORMATION_ROWS:
+		for col in PlayerData.FORMATION_COLS:
+			var unit_name: String = formation[row * PlayerData.FORMATION_COLS + col]
+			if unit_name == "" or unit_name == null:
+				continue
 
-	for p in placements:
-		var stats = R[p[2]]
-		if stats:
-			spawn_figure(p[0], p[1], stats)
+			var stats: UnitStats = PlayerData.get_unit_stats(unit_name)
+			if stats == null:
+				continue
+
+			var z: int = row if team == 0 else 6 - row
+			spawn_figure(Vector2i(col, z), team, stats)
 
 
 func spawn_figure(cell: Vector2i, team: int, stats: UnitStats):

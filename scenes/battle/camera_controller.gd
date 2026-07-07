@@ -1,11 +1,15 @@
 extends Camera3D
 
+# Kamera fuer GENAU EINE Seite (Host oder Client). Welche der beiden Kameras gerade
+# "current" ist, entscheidet camera_switcher.gd bei jedem Rundenwechsel — diese Kamera
+# hier fragt selbst nichts beim TurnManager ab, sie kennt nur ihre eigene, feste Seite.
+@export var team: int = 0  # 0 = Host-Seite, 1 = Client-Seite
+
 # ---------------------------------------------------------------------------
-# BASE POSITIONS  (Y=5, Z=4.5 fills a 7×7 board at TILE_SIZE=1)
+# BASE POSITION  (Y=5, Z=4.5 fills a 7×7 board at TILE_SIZE=1)
 # ---------------------------------------------------------------------------
-const BASE_OFFSET_MY_TURN    = Vector3(0, 5.0, 4.5)
-const BASE_OFFSET_THEIR_TURN = Vector3(0, 5.8, 5.2)
-const LOOK_BIAS              = Vector3(0, 0, 0)      # true board centre
+const BASE_OFFSET = Vector3(0, 5.0, 4.5)
+const LOOK_BIAS   = Vector3(0, 0, 0)      # true board centre
 
 # Attack drama
 const ATTACK_PUSH_OFFSET = Vector3(0, 3.8, 3.2)
@@ -26,44 +30,21 @@ const TWEEN_NORMAL  = 0.55
 const TWEEN_ATTACK  = 0.18
 const TWEEN_RECOVER = 0.9
 
-var _my_team:       int   = 1
-var _is_my_turn:    bool  = false
 var _current_tween: Tween = null
 
 # ---------------------------------------------------------------------------
 # INIT
 # ---------------------------------------------------------------------------
 func _ready():
-	await get_tree().process_frame
-	_init_camera()
-
-func _init_camera():
-	var tm = get_node_or_null("%TurnManager")
-	if tm:
-		_my_team    = tm.get_my_team()
-		_is_my_turn = tm.is_my_turn()
-		tm.turn_changed.connect(_on_turn_changed)
-
-	var sign_z = 1.0 if _my_team == 1 else -1.0
-	_snap_to(BASE_OFFSET_MY_TURN * Vector3(1, 1, sign_z))
-
-# ---------------------------------------------------------------------------
-# TURN CHANGES
-# ---------------------------------------------------------------------------
-func _on_turn_changed(_active_player):
-	var tm = get_node_or_null("%TurnManager")
-	if tm == null: return
-	_is_my_turn = tm.is_my_turn()
-	var sign_z  = 1.0 if _my_team == 1 else -1.0
-	var offset  = BASE_OFFSET_MY_TURN if _is_my_turn else BASE_OFFSET_THEIR_TURN
-	_tween_to(offset * Vector3(1, 1, sign_z), TWEEN_NORMAL)
+	var sign_z = 1.0 if team == 1 else -1.0
+	_snap_to(BASE_OFFSET * Vector3(1, 1, sign_z))
 
 # ---------------------------------------------------------------------------
 # FIGURE SELECTED — centre on figure Z, pull back enough to see full board.
 # X never moves. Y-axis rotation stays fixed (always frontal).
 # ---------------------------------------------------------------------------
 func on_figure_selected(figure_pos: Vector3, _move_positions: Array):
-	var sign_z = 1.0 if _my_team == 1 else -1.0
+	var sign_z = 1.0 if team == 1 else -1.0
 
 	# Height that fits the full 7×7 board in view (half-board = 3.5 tiles).
 	# Using base height + a small pull-back so the whole field is always visible.
@@ -83,16 +64,15 @@ func on_figure_selected(figure_pos: Vector3, _move_positions: Array):
 	_tween_to(target_pos, SELECT_ENTER_T)
 
 func on_figure_deselected():
-	var sign_z = 1.0 if _my_team == 1 else -1.0
-	var offset = BASE_OFFSET_MY_TURN if _is_my_turn else BASE_OFFSET_THEIR_TURN
-	_tween_to(offset * Vector3(1, 1, sign_z), TWEEN_NORMAL)
+	var sign_z = 1.0 if team == 1 else -1.0
+	_tween_to(BASE_OFFSET * Vector3(1, 1, sign_z), TWEEN_NORMAL)
 
 # ---------------------------------------------------------------------------
 # ATTACK DRAMA
 # ---------------------------------------------------------------------------
 func on_attack_fired(attacker_pos: Vector3, _defender_pos: Vector3):
 	if _current_tween: _current_tween.kill()
-	var sign_z  = 1.0 if _my_team == 1 else -1.0
+	var sign_z  = 1.0 if team == 1 else -1.0
 	var lateral = clampf(attacker_pos.x * 0.15, -0.6, 0.6)
 	var push    = ATTACK_PUSH_OFFSET + Vector3(lateral, 0, 0)
 
@@ -101,8 +81,7 @@ func on_attack_fired(attacker_pos: Vector3, _defender_pos: Vector3):
 		push * Vector3(1, 1, sign_z), TWEEN_ATTACK)\
 		.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 
-	var recover = (BASE_OFFSET_MY_TURN if _is_my_turn else BASE_OFFSET_THEIR_TURN)\
-		* Vector3(1, 1, sign_z)
+	var recover = BASE_OFFSET * Vector3(1, 1, sign_z)
 	_current_tween.tween_method(_move_and_look,
 		push * Vector3(1, 1, sign_z), recover, TWEEN_RECOVER)\
 		.set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)\
